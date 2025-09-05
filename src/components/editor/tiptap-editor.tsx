@@ -32,6 +32,17 @@ interface TipTapEditorProps {
 }
 
 export function TipTapEditor({ content = '', onChange, className }: TipTapEditorProps) {
+  const lowlight = createLowlight()
+  
+  // Register languages
+  lowlight.register('js', js)
+  lowlight.register('javascript', js)
+  lowlight.register('ts', ts)
+  lowlight.register('typescript', ts)
+  lowlight.register('html', html)
+  lowlight.register('xml', html)
+  lowlight.register('css', css)
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -47,7 +58,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         },
       }),
       CodeBlockLowlight.configure({
-        lowlight: createLowlight(),
+        lowlight,
         HTMLAttributes: {
           class: 'rounded-md bg-gray-900 text-white p-4 font-mono text-sm overflow-x-auto',
         },
