@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { lowlight } from 'lowlight'
+import { createLowlight } from 'lowlight'
 import { Button } from '@/components/ui/button'
 import { 
   Bold, 
@@ -43,7 +43,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         },
       }),
       CodeBlockLowlight.configure({
-        lowlight,
+        lowlight: createLowlight(),
         HTMLAttributes: {
           class: 'rounded-md bg-gray-900 text-white p-4 font-mono text-sm overflow-x-auto',
         },
