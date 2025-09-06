@@ -6,10 +6,6 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import TextAlign from '@tiptap/extension-text-align'
-import Table from '@tiptap/extension-table'
-import TableRow from '@tiptap/extension-table-row'
-import TableHeader from '@tiptap/extension-table-header'
-import TableCell from '@tiptap/extension-table-cell'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import Details from '@tiptap/extension-details'
@@ -37,7 +33,6 @@ import {
   AlignRight,
   AlignJustify,
   Settings,
-  Table as TableIcon,
   Minus,
   Smile,
   ChevronRight
@@ -93,15 +88,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         alignments: ['left', 'center', 'right', 'justify'],
         defaultAlignment: 'left',
       }),
-      Table.configure({
-        resizable: true,
-        HTMLAttributes: {
-          class: 'table-auto border-collapse border border-gray-300',
-        },
-      }),
-      TableRow,
-      TableHeader,
-      TableCell,
       HorizontalRule.configure({
         HTMLAttributes: {
           class: 'border-t-2 border-gray-300 my-4',
@@ -190,9 +176,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     }
   }
 
-  const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-  }
 
   const addHorizontalRule = () => {
     editor.chain().focus().setHorizontalRule().run()
@@ -366,15 +349,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={insertTable}
-          title="Insérer un tableau"
-        >
-          <TableIcon className="w-4 h-4" />
-        </Button>
         
         <Button
           variant="ghost"

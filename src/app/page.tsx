@@ -73,20 +73,6 @@ export default function Home() {
                 .prose [style*="text-align: justify"] {
                   text-align: justify;
                 }
-                .prose table {
-                  border-collapse: collapse;
-                  width: 100%;
-                  margin: 1rem 0;
-                }
-                .prose th, .prose td {
-                  border: 1px solid #d1d5db;
-                  padding: 0.75rem;
-                  text-align: left;
-                }
-                .prose th {
-                  background-color: #f3f4f6;
-                  font-weight: bold;
-                }
                 .prose hr {
                   border: none;
                   border-top: 2px solid #d1d5db;
