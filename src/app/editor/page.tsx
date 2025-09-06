@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExportButtons } from '@/components/editor/export-buttons'
+import { ImageUpload } from '@/components/editor/image-upload'
+import { PremiumFeatures } from '@/components/editor/premium-features'
 
 export default function EditorPage() {
   const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
@@ -17,10 +19,18 @@ export default function EditorPage() {
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
           Créez des README professionnels avec notre éditeur Markdown WYSIWYG. 
         </p>
-        <ExportButtons 
-          content={content} 
-          htmlContent={content}
-        />
+        <div className="flex flex-wrap gap-3 justify-center">
+          <ExportButtons 
+            content={content} 
+            htmlContent={content}
+          />
+          <ImageUpload 
+            onImageUploaded={(markdownImage) => {
+              // Ajouter l'image à la fin du contenu
+              setContent(prev => prev + '\n\n' + markdownImage)
+            }}
+          />
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
