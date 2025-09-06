@@ -1,25 +1,26 @@
 "use client"
 
-import { useSession, signIn, signOut } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 
 export function AuthButton() {
-  const { data: session, isPending } = useSession()
+  const session = authClient.useSession()
+  const isPending = !session.data && !session.error
 
   if (isPending) {
     return <Button disabled>Chargement...</Button>
   }
 
-  if (session) {
+  if (session.data) {
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">
-          Connecté comme {session.user.email}
+          Connecté comme {session.data.user.email}
         </span>
         <Button
           variant="outline"
           onClick={async () => {
-            await signOut({
+            await authClient.signOut({
               fetchOptions: {
                 onSuccess: () => {
                   window.location.href = "/"
@@ -39,7 +40,7 @@ export function AuthButton() {
       <Button
         variant="outline"
         onClick={async () => {
-          await signIn.social({
+          await authClient.signIn.social({
             provider: "github",
             callbackURL: "/dashboard"
           })
