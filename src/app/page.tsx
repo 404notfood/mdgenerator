@@ -44,10 +44,8 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="bg-gray-50 p-4 rounded-lg min-h-[500px] border">
-              <p className="text-gray-500 text-center mt-20">
-                L'aperçu s'affichera ici...
-              </p>
+            <div className="bg-gray-50 p-4 rounded-lg min-h-[500px] border prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none">
+              <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
           </CardContent>
         </Card>
