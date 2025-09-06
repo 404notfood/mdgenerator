@@ -46,6 +46,42 @@ export default function Home() {
           <CardContent>
             <div className="bg-gray-50 p-4 rounded-lg min-h-[500px] border prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none">
               <style jsx>{`
+                .prose h1 {
+                  font-size: 2.25rem;
+                  font-weight: bold;
+                  margin: 2rem 0 1rem 0;
+                  line-height: 1.2;
+                }
+                .prose h2 {
+                  font-size: 1.875rem;
+                  font-weight: bold;
+                  margin: 1.5rem 0 0.75rem 0;
+                  line-height: 1.3;
+                }
+                .prose h3 {
+                  font-size: 1.5rem;
+                  font-weight: bold;
+                  margin: 1.25rem 0 0.5rem 0;
+                  line-height: 1.4;
+                }
+                .prose h4 {
+                  font-size: 1.25rem;
+                  font-weight: bold;
+                  margin: 1rem 0 0.5rem 0;
+                  line-height: 1.5;
+                }
+                .prose h5 {
+                  font-size: 1.125rem;
+                  font-weight: bold;
+                  margin: 0.75rem 0 0.25rem 0;
+                  line-height: 1.5;
+                }
+                .prose h6 {
+                  font-size: 1rem;
+                  font-weight: bold;
+                  margin: 0.5rem 0 0.25rem 0;
+                  line-height: 1.6;
+                }
                 .prose ul {
                   list-style-type: disc;
                   list-style-position: inside;
@@ -77,20 +113,6 @@ export default function Home() {
                   border: none;
                   border-top: 2px solid #d1d5db;
                   margin: 2rem 0;
-                }
-                .prose details {
-                  border: 1px solid #d1d5db;
-                  border-radius: 0.5rem;
-                  padding: 1rem;
-                  margin: 1rem 0;
-                }
-                .prose details summary {
-                  font-weight: bold;
-                  cursor: pointer;
-                  margin-bottom: 0.5rem;
-                }
-                .prose details[open] summary {
-                  margin-bottom: 1rem;
                 }
               `}</style>
               <div dangerouslySetInnerHTML={{ __html: content }} />

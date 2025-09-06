@@ -8,7 +8,6 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import TextAlign from '@tiptap/extension-text-align'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
-import Details from '@tiptap/extension-details'
 import FileHandler from '@tiptap/extension-file-handler'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
@@ -35,7 +34,9 @@ import {
   Settings,
   Minus,
   Smile,
-  ChevronRight
+  Heading1,
+  Heading2,
+  Heading3,
 } from 'lucide-react'
 
 interface TipTapEditorProps {
@@ -94,7 +95,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         },
       }),
       Emoji,
-      Details,
       FileHandler.configure({
         allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
         onDrop: (currentEditor, files, pos) => {
@@ -188,14 +188,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     }
   }
 
-  const insertDetails = () => {
-    editor.chain().focus().insertContent(`
-      <details>
-        <summary>Titre de section</summary>
-        <p>Contenu masqué ici...</p>
-      </details>
-    `).run()
-  }
+
 
   const setLink = () => {
     const previousUrl = editor.getAttributes('link').href
@@ -251,6 +244,38 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           className={editor.isActive('code') ? 'bg-gray-200' : ''}
         >
           <Code className="w-4 h-4" />
+        </Button>
+
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          className={editor.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}
+          title="Titre H1"
+        >
+          <Heading1 className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className={editor.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}
+          title="Titre H2"
+        >
+          <Heading2 className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          className={editor.isActive('heading', { level: 3 }) ? 'bg-gray-200' : ''}
+          title="Titre H3"
+        >
+          <Heading3 className="w-4 h-4" />
         </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
@@ -368,16 +393,8 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           <Smile className="w-4 h-4" />
         </Button>
         
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={insertDetails}
-          title="Section collapsible"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-
         <div className="w-px h-6 bg-gray-300 mx-1" />
+        
         
         <Button
           variant="ghost"
