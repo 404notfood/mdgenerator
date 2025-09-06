@@ -12,7 +12,6 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import FileHandler from '@tiptap/extension-file-handler'
 import Highlight from '@tiptap/extension-highlight'
-import TextStyle from '@tiptap/extension-text-style'
 import Color from '@tiptap/extension-color'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
@@ -181,7 +180,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           class: 'rounded-md bg-gray-900 text-white p-4 font-mono text-sm overflow-x-auto',
         },
       }),
-      TextStyle,
       Color,
     ],
     content,

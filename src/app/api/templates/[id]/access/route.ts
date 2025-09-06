@@ -4,9 +4,11 @@ import { auth } from "@/lib/auth"
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
+    
     // Vérifier l'authentification
     const session = await auth.api.getSession({ headers: request.headers })
     
@@ -20,7 +22,7 @@ export async function GET(
     // Récupérer le template
     const template = await prisma.template.findUnique({
       where: {
-        id: params.id,
+        id: resolvedParams.id,
         isActive: true
       },
       select: {
@@ -50,7 +52,7 @@ export async function GET(
       where: {
         userId_templateId: {
           userId: session.user.id,
-          templateId: template.id
+          templateId: resolvedParams.id
         },
         status: "SUCCEEDED"
       }
