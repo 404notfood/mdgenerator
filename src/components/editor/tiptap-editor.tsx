@@ -53,6 +53,8 @@ interface TipTapEditorProps {
 }
 
 export function TipTapEditor({ content = '', onChange, className }: TipTapEditorProps) {
+  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
+  
   const lowlight = createLowlight()
   
   // Register languages
@@ -77,6 +79,9 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
             class: 'list-decimal list-inside',
           },
         },
+        link: false, // Désactiver le link du StarterKit
+        horizontalRule: false, // Désactiver le horizontalRule du StarterKit  
+        codeBlock: false, // Désactiver le codeBlock du StarterKit
       }),
       Image.configure({
         HTMLAttributes: {
@@ -203,8 +208,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   const addHorizontalRule = () => {
     editor.chain().focus().setHorizontalRule().run()
   }
-
-  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
 
   const insertEmoji = (emoji: string) => {
     editor.chain().focus().insertContent(emoji).run()
