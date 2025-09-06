@@ -178,30 +178,53 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   }
 
   const resizeImage = () => {
-    const width = window.prompt('Largeur de l\'image (en pixels, ex: 300)', '300')
-    if (width && !isNaN(Number(width))) {
-      editor.chain().focus().updateAttributes('image', {
-        style: `width: ${width}px; height: auto;`
-      }).run()
+    if (editor.isActive('image')) {
+      const width = window.prompt('Largeur de l\'image (en pixels, ex: 300)', '300')
+      if (width && !isNaN(Number(width))) {
+        editor.chain().focus().updateAttributes('image', {
+          width: Number(width),
+          style: `width: ${width}px; height: auto;`
+        }).run()
+      }
+    } else {
+      alert('Veuillez d\'abord cliquer sur une image pour la redimensionner')
     }
   }
 
   const alignImageLeft = () => {
-    editor.chain().focus().updateAttributes('image', {
-      style: 'width: 300px; height: auto; display: block; margin: 0;'
-    }).run()
+    if (editor.isActive('image')) {
+      const currentAttrs = editor.getAttributes('image')
+      editor.chain().focus().updateAttributes('image', {
+        ...currentAttrs,
+        style: `width: ${currentAttrs.width || 300}px; height: auto; display: block; margin: 1rem 0;`
+      }).run()
+    } else {
+      alert('Veuillez d\'abord cliquer sur une image pour l\'aligner')
+    }
   }
 
   const alignImageCenter = () => {
-    editor.chain().focus().updateAttributes('image', {
-      style: 'width: 300px; height: auto; display: block; margin: 0 auto;'
-    }).run()
+    if (editor.isActive('image')) {
+      const currentAttrs = editor.getAttributes('image')
+      editor.chain().focus().updateAttributes('image', {
+        ...currentAttrs,
+        style: `width: ${currentAttrs.width || 300}px; height: auto; display: block; margin: 1rem auto;`
+      }).run()
+    } else {
+      alert('Veuillez d\'abord cliquer sur une image pour l\'aligner')
+    }
   }
 
   const alignImageRight = () => {
-    editor.chain().focus().updateAttributes('image', {
-      style: 'width: 300px; height: auto; display: block; margin: 0 0 0 auto;'
-    }).run()
+    if (editor.isActive('image')) {
+      const currentAttrs = editor.getAttributes('image')
+      editor.chain().focus().updateAttributes('image', {
+        ...currentAttrs,
+        style: `width: ${currentAttrs.width || 300}px; height: auto; display: block; margin: 1rem 0 1rem auto;`
+      }).run()
+    } else {
+      alert('Veuillez d\'abord cliquer sur une image pour l\'aligner')
+    }
   }
 
 
@@ -263,38 +286,45 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   const setHighlight = (color: string) => {
     const selection = editor.state.selection
     if (!selection.empty) {
-      const selectedText = editor.state.doc.textBetween(selection.from, selection.to)
-      editor.chain().focus().insertContent(`<span style="background-color: ${color}">${selectedText}</span>`).run()
+      const selectedText = editor.state.doc.textBetween(selection.from, selection.to, ' ')
+      editor.chain()
+        .focus()
+        .deleteSelection()
+        .insertContent(`<mark style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${selectedText}</mark>`)
+        .run()
     } else {
-      editor.chain().focus().insertContent(`<span style="background-color: ${color}">Texte surligné</span>`).run()
+      editor.chain().focus().insertContent(`<mark style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">Texte surligné</mark>`).run()
     }
   }
 
   const insertTable = () => {
-    const tableHTML = `
-      <table style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
-        <thead>
-          <tr>
-            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 1</th>
-            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 2</th>
-            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 1</td>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 2</td>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 3</td>
-          </tr>
-          <tr>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 4</td>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 5</td>
-            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 6</td>
-          </tr>
-        </tbody>
-      </table>
-    `
-    editor.chain().focus().insertContent(tableHTML).run()
+    const cols = window.prompt('Nombre de colonnes (1-10):', '3')
+    const rows = window.prompt('Nombre de lignes (1-20):', '3')
+    
+    if (cols && rows && !isNaN(Number(cols)) && !isNaN(Number(rows))) {
+      const colCount = Math.max(1, Math.min(10, Number(cols)))
+      const rowCount = Math.max(1, Math.min(20, Number(rows)))
+      
+      let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1rem 0;"><thead><tr>'
+      
+      // En-têtes
+      for (let i = 1; i <= colCount; i++) {
+        tableHTML += `<th style="border: 1px solid #d1d5db; padding: 8px 12px; background-color: #f3f4f6; font-weight: bold;">En-tête ${i}</th>`
+      }
+      tableHTML += '</tr></thead><tbody>'
+      
+      // Lignes de données
+      for (let r = 1; r <= rowCount; r++) {
+        tableHTML += '<tr>'
+        for (let c = 1; c <= colCount; c++) {
+          tableHTML += `<td style="border: 1px solid #d1d5db; padding: 8px 12px;">Cellule ${r}-${c}</td>`
+        }
+        tableHTML += '</tr>'
+      }
+      tableHTML += '</tbody></table>'
+      
+      editor.chain().focus().insertContent(tableHTML).run()
+    }
   }
 
 
@@ -519,17 +549,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         >
           <Minus className="w-4 h-4" />
         </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={insertEmoji}
-          title="Insérer un emoji"
-        >
-          <Smile className="w-4 h-4" />
-        </Button>
-        
-        <div className="w-px h-6 bg-gray-300 mx-1" />
         
         <Button
           variant="ghost"
