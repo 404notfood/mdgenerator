@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
+import { Mark, mergeAttributes } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -46,6 +47,7 @@ import {
   MoveLeft as ImageLeft,
   MoveRight as ImageRight,
 } from 'lucide-react'
+
 
 interface TipTapEditorProps {
   content?: string
@@ -287,12 +289,12 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   }
 
   const colors = [
-    { name: 'Noir', color: '#000000' },
-    { name: 'Rouge', color: '#dc2626' },
-    { name: 'Orange', color: '#ea580c' },
-    { name: 'Vert', color: '#16a34a' },
-    { name: 'Bleu', color: '#2563eb' },
-    { name: 'Violet', color: '#9333ea' },
+    { name: 'Noir', color: '#000000', colorName: 'black' },
+    { name: 'Rouge', color: '#dc2626', colorName: 'red' },
+    { name: 'Orange', color: '#ea580c', colorName: 'orange' },
+    { name: 'Vert', color: '#16a34a', colorName: 'green' },
+    { name: 'Bleu', color: '#2563eb', colorName: 'blue' },
+    { name: 'Violet', color: '#9333ea', colorName: 'purple' },
   ]
 
   const highlightColors = [
@@ -322,14 +324,12 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     { emoji: '🎨', name: 'Palette' },
   ]
 
-  const setTextColor = (color: string) => {
-    const selection = editor.state.selection
-    if (!selection.empty) {
-      const selectedText = editor.state.doc.textBetween(selection.from, selection.to)
-      editor.chain().focus().insertContent(`<span style="color: ${color}">${selectedText}</span>`).run()
-    } else {
-      editor.chain().focus().insertContent(`<span style="color: ${color}">Texte coloré</span>`).run()
-    }
+  const setTextColor = (colorName: string) => {
+    if (!editor) return
+    
+    editor.chain().focus().setHighlight({ 
+      'data-color': colorName 
+    }).run()
   }
 
   const setHighlight = (color: string) => {
@@ -720,7 +720,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
               {colors.map((colorItem, index) => (
                 <button
                   key={index}
-                  onClick={() => setTextColor(colorItem.color)}
+                  onClick={() => setTextColor(colorItem.colorName)}
                   className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: colorItem.color }}
                   title={`${colorItem.name}`}

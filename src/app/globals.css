@@ -121,3 +121,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Classes de couleur pour TipTap utilisant le système Highlight */
+mark[data-color="black"] { background: transparent !important; color: #000000 !important; }
+mark[data-color="red"] { background: transparent !important; color: #dc2626 !important; }
+mark[data-color="orange"] { background: transparent !important; color: #ea580c !important; }
+mark[data-color="green"] { background: transparent !important; color: #16a34a !important; }
+mark[data-color="blue"] { background: transparent !important; color: #2563eb !important; }
+mark[data-color="purple"] { background: transparent !important; color: #9333ea !important; }
