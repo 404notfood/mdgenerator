@@ -37,6 +37,8 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  Palette,
+  Table as TableIcon,
 } from 'lucide-react'
 
 interface TipTapEditorProps {
@@ -186,6 +188,53 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     if (emoji) {
       editor.chain().focus().insertContent(emoji).run()
     }
+  }
+
+  const colors = [
+    { name: 'Noir', color: '#000000' },
+    { name: 'Rouge', color: '#dc2626' },
+    { name: 'Orange', color: '#ea580c' },
+    { name: 'Vert', color: '#16a34a' },
+    { name: 'Bleu', color: '#2563eb' },
+    { name: 'Violet', color: '#9333ea' },
+  ]
+
+  const setTextColor = (color: string) => {
+    const selection = editor.state.selection
+    if (!selection.empty) {
+      const selectedText = editor.state.doc.textBetween(selection.from, selection.to)
+      editor.chain().focus().insertContent(`<span style="color: ${color}">${selectedText}</span>`).run()
+    } else {
+      // Si rien n'est sélectionné, insérer un span vide pour commencer à taper en couleur
+      editor.chain().focus().insertContent(`<span style="color: ${color}">Texte coloré</span>`).run()
+    }
+  }
+
+  const insertTable = () => {
+    const tableHTML = `
+      <table style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 1</th>
+            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 2</th>
+            <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6;">En-tête 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 1</td>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 2</td>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 3</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 4</td>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 5</td>
+            <td style="border: 1px solid #d1d5db; padding: 8px;">Cellule 6</td>
+          </tr>
+        </tbody>
+      </table>
+    `
+    editor.chain().focus().insertContent(tableHTML).run()
   }
 
 
@@ -392,6 +441,32 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         >
           <Smile className="w-4 h-4" />
         </Button>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={insertTable}
+          title="Insérer un tableau"
+        >
+          <TableIcon className="w-4 h-4" />
+        </Button>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        <div className="flex items-center gap-1" title="Couleurs de texte">
+          <Palette className="w-4 h-4 text-gray-600" />
+          {colors.map((colorItem, index) => (
+            <button
+              key={index}
+              onClick={() => setTextColor(colorItem.color)}
+              className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
+              style={{ backgroundColor: colorItem.color }}
+              title={`${colorItem.name} (${colorItem.color})`}
+            />
+          ))}
+        </div>
         
         <div className="w-px h-6 bg-gray-300 mx-1" />
         

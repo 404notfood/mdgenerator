@@ -51,18 +51,25 @@ export default function Home() {
                   font-weight: bold;
                   margin: 2rem 0 1rem 0;
                   line-height: 1.2;
+                  color: #1f2937;
+                  border-bottom: 2px solid #e5e7eb;
+                  padding-bottom: 0.5rem;
                 }
                 .prose h2 {
                   font-size: 1.875rem;
                   font-weight: bold;
                   margin: 1.5rem 0 0.75rem 0;
                   line-height: 1.3;
+                  color: #374151;
+                  border-bottom: 1px solid #e5e7eb;
+                  padding-bottom: 0.25rem;
                 }
                 .prose h3 {
                   font-size: 1.5rem;
                   font-weight: bold;
                   margin: 1.25rem 0 0.5rem 0;
                   line-height: 1.4;
+                  color: #4b5563;
                 }
                 .prose h4 {
                   font-size: 1.25rem;
@@ -113,6 +120,28 @@ export default function Home() {
                   border: none;
                   border-top: 2px solid #d1d5db;
                   margin: 2rem 0;
+                }
+                .prose table {
+                  border-collapse: collapse;
+                  width: 100%;
+                  margin: 1rem 0;
+                  font-size: 0.875rem;
+                }
+                .prose th, .prose td {
+                  border: 1px solid #d1d5db;
+                  padding: 8px 12px;
+                  text-align: left;
+                }
+                .prose th {
+                  background-color: #f3f4f6;
+                  font-weight: bold;
+                }
+                .prose span[style*="color"] {
+                  /* Préserver les couleurs inline */
+                }
+                .prose p {
+                  margin: 0.75rem 0;
+                  line-height: 1.6;
                 }
               `}</style>
               <div dangerouslySetInnerHTML={{ __html: content }} />
