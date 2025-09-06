@@ -206,6 +206,30 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     }
   }
 
+  const insertTable = () => {
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+  }
+
+  const addHorizontalRule = () => {
+    editor.chain().focus().setHorizontalRule().run()
+  }
+
+  const insertEmoji = () => {
+    const emoji = window.prompt('Entrez un emoji (ex: 😀, 🚀, ⭐)')
+    if (emoji) {
+      editor.chain().focus().insertContent(emoji).run()
+    }
+  }
+
+  const insertDetails = () => {
+    editor.chain().focus().insertContent(`
+      <details>
+        <summary>Titre de section</summary>
+        <p>Contenu masqué ici...</p>
+      </details>
+    `).run()
+  }
+
   const setLink = () => {
     const previousUrl = editor.getAttributes('link').href
     const url = window.prompt('URL du lien', previousUrl)
@@ -355,6 +379,44 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           title="Redimensionner l'image"
         >
           <Settings className="w-4 h-4" />
+        </Button>
+
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={insertTable}
+          title="Insérer un tableau"
+        >
+          <TableIcon className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={addHorizontalRule}
+          title="Ligne de séparation"
+        >
+          <Minus className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={insertEmoji}
+          title="Insérer un emoji"
+        >
+          <Smile className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={insertDetails}
+          title="Section collapsible"
+        >
+          <ChevronRight className="w-4 h-4" />
         </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />

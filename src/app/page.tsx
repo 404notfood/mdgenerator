@@ -73,6 +73,39 @@ export default function Home() {
                 .prose [style*="text-align: justify"] {
                   text-align: justify;
                 }
+                .prose table {
+                  border-collapse: collapse;
+                  width: 100%;
+                  margin: 1rem 0;
+                }
+                .prose th, .prose td {
+                  border: 1px solid #d1d5db;
+                  padding: 0.75rem;
+                  text-align: left;
+                }
+                .prose th {
+                  background-color: #f3f4f6;
+                  font-weight: bold;
+                }
+                .prose hr {
+                  border: none;
+                  border-top: 2px solid #d1d5db;
+                  margin: 2rem 0;
+                }
+                .prose details {
+                  border: 1px solid #d1d5db;
+                  border-radius: 0.5rem;
+                  padding: 1rem;
+                  margin: 1rem 0;
+                }
+                .prose details summary {
+                  font-weight: bold;
+                  cursor: pointer;
+                  margin-bottom: 0.5rem;
+                }
+                .prose details[open] summary {
+                  margin-bottom: 1rem;
+                }
               `}</style>
               <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
