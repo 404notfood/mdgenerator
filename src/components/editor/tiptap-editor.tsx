@@ -7,14 +7,9 @@ import Link from '@tiptap/extension-link'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import TextAlign from '@tiptap/extension-text-align'
 import Table from '@tiptap/extension-table'
-import TableRow from '@tiptap/extension-table/src/table-row'
-import TableHeader from '@tiptap/extension-table/src/table-header'
-import TableCell from '@tiptap/extension-table/src/table-cell'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import Details from '@tiptap/extension-details'
-import DetailsSummary from '@tiptap/extension-details/src/details-summary'
-import DetailsContent from '@tiptap/extension-details/src/details-content'
 import FileHandler from '@tiptap/extension-file-handler'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
@@ -101,21 +96,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           class: 'table-auto border-collapse border border-gray-300',
         },
       }),
-      TableRow.configure({
-        HTMLAttributes: {
-          class: 'border-b border-gray-300',
-        },
-      }),
-      TableHeader.configure({
-        HTMLAttributes: {
-          class: 'border border-gray-300 bg-gray-100 px-4 py-2 font-bold',
-        },
-      }),
-      TableCell.configure({
-        HTMLAttributes: {
-          class: 'border border-gray-300 px-4 py-2',
-        },
-      }),
       HorizontalRule.configure({
         HTMLAttributes: {
           class: 'border-t-2 border-gray-300 my-4',
@@ -123,8 +103,6 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       }),
       Emoji,
       Details,
-      DetailsSummary,
-      DetailsContent,
       FileHandler.configure({
         allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
         onDrop: (currentEditor, files, pos) => {
