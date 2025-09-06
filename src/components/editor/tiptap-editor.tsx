@@ -12,6 +12,8 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import FileHandler from '@tiptap/extension-file-handler'
 import Highlight from '@tiptap/extension-highlight'
+import TextStyle from '@tiptap/extension-text-style'
+import Color from '@tiptap/extension-color'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
@@ -179,6 +181,8 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           class: 'rounded-md bg-gray-900 text-white p-4 font-mono text-sm overflow-x-auto',
         },
       }),
+      TextStyle,
+      Color,
     ],
     content,
     immediatelyRender: false,
@@ -324,12 +328,9 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     { emoji: '🎨', name: 'Palette' },
   ]
 
-  const setTextColor = (colorName: string) => {
+  const setTextColor = (color: string) => {
     if (!editor) return
-    
-    editor.chain().focus().setHighlight({ 
-      'data-color': colorName 
-    }).run()
+    editor.chain().focus().setColor(color).run()
   }
 
   const setHighlight = (color: string) => {
@@ -720,12 +721,19 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
               {colors.map((colorItem, index) => (
                 <button
                   key={index}
-                  onClick={() => setTextColor(colorItem.colorName)}
+                  onClick={() => setTextColor(colorItem.color)}
                   className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
                   style={{ backgroundColor: colorItem.color }}
                   title={`${colorItem.name}`}
                 />
               ))}
+              <button
+                onClick={() => editor.chain().focus().unsetColor().run()}
+                className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform bg-white relative"
+                title="Enlever la couleur du texte"
+              >
+                <span className="absolute inset-0 flex items-center justify-center text-red-500 text-xs font-bold">✕</span>
+              </button>
             </div>
           </div>
 
@@ -742,6 +750,13 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
                   title={`Surligner en ${colorItem.name}`}
                 />
               ))}
+              <button
+                onClick={() => editor.chain().focus().unsetHighlight().run()}
+                className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform bg-white relative"
+                title="Enlever le surlignage"
+              >
+                <span className="absolute inset-0 flex items-center justify-center text-red-500 text-xs font-bold">✕</span>
+              </button>
             </div>
           </div>
         </div>
