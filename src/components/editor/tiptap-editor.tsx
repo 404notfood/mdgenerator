@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import FileHandler from '@tiptap/extension-file-handler'
+import Highlight from '@tiptap/extension-highlight'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
@@ -104,6 +105,12 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       HorizontalRule.configure({
         HTMLAttributes: {
           class: 'border-t-2 border-gray-300 my-4',
+        },
+      }),
+      Highlight.configure({
+        multicolor: true,
+        HTMLAttributes: {
+          class: 'highlight',
         },
       }),
       Emoji,
@@ -284,17 +291,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   }
 
   const setHighlight = (color: string) => {
-    const selection = editor.state.selection
-    if (!selection.empty) {
-      const selectedText = editor.state.doc.textBetween(selection.from, selection.to, ' ')
-      editor.chain()
-        .focus()
-        .deleteSelection()
-        .insertContent(`<mark style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">${selectedText}</mark>`)
-        .run()
-    } else {
-      editor.chain().focus().insertContent(`<mark style="background-color: ${color}; padding: 2px 4px; border-radius: 3px;">Texte surligné</mark>`).run()
-    }
+    editor.chain().focus().setHighlight({ color }).run()
   }
 
   const insertTable = () => {
@@ -602,17 +599,20 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           </Button>
           
           {showEmojiPicker && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-50 grid grid-cols-8 gap-1">
-              {githubEmojis.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => insertEmoji(item.emoji)}
-                  className="p-1 hover:bg-gray-100 rounded text-lg"
-                  title={item.name}
-                >
-                  {item.emoji}
-                </button>
-              ))}
+            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl p-3 z-50 w-80">
+              <div className="text-xs text-gray-600 mb-2 font-semibold">Emojis pour README GitHub</div>
+              <div className="grid grid-cols-8 gap-2">
+                {githubEmojis.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => insertEmoji(item.emoji)}
+                    className="p-2 hover:bg-gray-100 rounded text-xl transition-colors hover:scale-110 transform"
+                    title={item.name}
+                  >
+                    {item.emoji}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
