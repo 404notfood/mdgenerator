@@ -1,73 +1,12 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Eye, Download, Crown } from "lucide-react"
-
-// Types temporaires (seront remplacés par les types Prisma)
-type TemplateCategory = "STARTUP" | "OPEN_SOURCE" | "API" | "MOBILE" | "WEB" | "DATA_SCIENCE" | "GENERAL"
-
-interface Template {
-  id: string
-  name: string
-  description: string
-  category: TemplateCategory
-  price: number
-  thumbnail?: string
-  isPremium: boolean
-}
-
-// Templates de démonstration (seront récupérés depuis la base de données)
-const demoTemplates: Template[] = [
-  {
-    id: "1",
-    name: "Startup MVP",
-    description: "Template complet pour présenter votre MVP startup",
-    category: "STARTUP",
-    price: 0,
-    isPremium: false
-  },
-  {
-    id: "2",
-    name: "Open Source Pro",
-    description: "Template professionnel pour projets open source",
-    category: "OPEN_SOURCE", 
-    price: 990,
-    isPremium: true
-  },
-  {
-    id: "3",
-    name: "API Documentation",
-    description: "Documentation complète pour vos APIs REST/GraphQL",
-    category: "API",
-    price: 590,
-    isPremium: true
-  },
-  {
-    id: "4",
-    name: "Mobile App",
-    description: "Template pour applications mobiles iOS/Android",
-    category: "MOBILE",
-    price: 790,
-    isPremium: true
-  },
-  {
-    id: "5",
-    name: "Web Application",
-    description: "Template moderne pour applications web",
-    category: "WEB",
-    price: 0,
-    isPremium: false
-  },
-  {
-    id: "6",
-    name: "Data Science",
-    description: "Template pour projets de science des données",
-    category: "DATA_SCIENCE",
-    price: 1290,
-    isPremium: true
-  }
-]
+import { Eye, Download, Crown, Loader2 } from "lucide-react"
+import { useTemplates, TemplateCategory } from "@/hooks/use-templates"
+import { useState } from "react"
 
 const categoryLabels: Record<TemplateCategory, string> = {
   STARTUP: "Startup",
@@ -80,6 +19,13 @@ const categoryLabels: Record<TemplateCategory, string> = {
 }
 
 export default function TemplatesPage() {
+  const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | undefined>()
+  const [premiumFilter, setPremiumFilter] = useState<boolean | undefined>()
+  
+  const { templates, loading, error } = useTemplates({
+    category: selectedCategory,
+    premium: premiumFilter
+  })
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="text-center mb-12">
@@ -93,22 +39,55 @@ export default function TemplatesPage() {
         </p>
       </div>
 
-      {/* Filtres (à implémenter plus tard) */}
+      {/* Filtres */}
       <div className="flex flex-wrap gap-2 justify-center mb-8">
-        <Button variant="outline" size="sm">Tous</Button>
-        <Button variant="outline" size="sm">Gratuit</Button>
-        <Button variant="outline" size="sm">Premium</Button>
-        <Button variant="outline" size="sm">Startup</Button>
-        <Button variant="outline" size="sm">Open Source</Button>
-        <Button variant="outline" size="sm">API</Button>
-        <Button variant="outline" size="sm">Mobile</Button>
-        <Button variant="outline" size="sm">Web</Button>
-        <Button variant="outline" size="sm">Data Science</Button>
+        <Button 
+          variant={!selectedCategory && premiumFilter === undefined ? "default" : "outline"} 
+          size="sm"
+          onClick={() => { setSelectedCategory(undefined); setPremiumFilter(undefined) }}
+        >
+          Tous
+        </Button>
+        <Button 
+          variant={premiumFilter === false ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setPremiumFilter(false)}
+        >
+          Gratuit
+        </Button>
+        <Button 
+          variant={premiumFilter === true ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setPremiumFilter(true)}
+        >
+          Premium
+        </Button>
+        {Object.entries(categoryLabels).map(([key, label]) => (
+          <Button 
+            key={key}
+            variant={selectedCategory === key ? "default" : "outline"} 
+            size="sm"
+            onClick={() => setSelectedCategory(key as TemplateCategory)}
+          >
+            {label}
+          </Button>
+        ))}
       </div>
 
       {/* Grille de templates */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {demoTemplates.map((template) => (
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin" />
+          <span className="ml-2">Chargement des templates...</span>
+        </div>
+      ) : error ? (
+        <div className="text-center py-12">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Réessayer</Button>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {templates.map((template) => (
           <Card key={template.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex justify-between items-start mb-2">
@@ -163,8 +142,22 @@ export default function TemplatesPage() {
               )}
             </CardContent>
           </Card>
-        ))}
-      </div>
+          ))}
+          
+          {templates.length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <Crown className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Aucun template trouvé</h3>
+              <p className="text-gray-600 mb-4">
+                Essayez de modifier vos filtres ou parcourez tous nos templates.
+              </p>
+              <Button onClick={() => { setSelectedCategory(undefined); setPremiumFilter(undefined) }}>
+                Voir tous les templates
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* CTA */}
       <div className="text-center mt-16">

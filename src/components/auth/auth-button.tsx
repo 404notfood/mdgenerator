@@ -1,11 +1,10 @@
 "use client"
 
-import { authClient } from "@/lib/auth-client"
+import { useSession, signIn, signOut } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 
 export function AuthButton() {
-  const session = authClient.useSession()
-  const isPending = !session.data && !session.error
+  const { data: session, isPending } = useSession()
 
   if (isPending) {
     return <Button disabled>Chargement...</Button>
