@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -39,6 +40,10 @@ import {
   Heading3,
   Palette,
   Table as TableIcon,
+  Highlighter,
+  AlignCenter as ImageCenter,
+  MoveLeft as ImageLeft,
+  MoveRight as ImageRight,
 } from 'lucide-react'
 
 interface TipTapEditorProps {
@@ -75,10 +80,10 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       }),
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-lg max-w-full h-auto cursor-pointer',
-          style: 'max-width: 300px; height: auto;',
+          class: 'rounded-lg cursor-pointer',
         },
         allowBase64: true,
+        inline: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -170,12 +175,28 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
   const resizeImage = () => {
     const width = window.prompt('Largeur de l\'image (en pixels, ex: 300)', '300')
     if (width && !isNaN(Number(width))) {
-      const attrs = editor.getAttributes('image')
-      editor.chain().focus().updateAttributes('image', { 
-        ...attrs,
-        style: `max-width: ${width}px; height: auto;`
+      editor.chain().focus().updateAttributes('image', {
+        style: `width: ${width}px; height: auto;`
       }).run()
     }
+  }
+
+  const alignImageLeft = () => {
+    editor.chain().focus().updateAttributes('image', {
+      style: 'width: 300px; height: auto; display: block; margin: 0;'
+    }).run()
+  }
+
+  const alignImageCenter = () => {
+    editor.chain().focus().updateAttributes('image', {
+      style: 'width: 300px; height: auto; display: block; margin: 0 auto;'
+    }).run()
+  }
+
+  const alignImageRight = () => {
+    editor.chain().focus().updateAttributes('image', {
+      style: 'width: 300px; height: auto; display: block; margin: 0 0 0 auto;'
+    }).run()
   }
 
 
@@ -183,11 +204,11 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     editor.chain().focus().setHorizontalRule().run()
   }
 
-  const insertEmoji = () => {
-    const emoji = window.prompt('Entrez un emoji (ex: 😀, 🚀, ⭐)')
-    if (emoji) {
-      editor.chain().focus().insertContent(emoji).run()
-    }
+  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
+
+  const insertEmoji = (emoji: string) => {
+    editor.chain().focus().insertContent(emoji).run()
+    setShowEmojiPicker(false)
   }
 
   const colors = [
@@ -199,14 +220,50 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     { name: 'Violet', color: '#9333ea' },
   ]
 
+  const highlightColors = [
+    { name: 'Jaune', color: '#fef08a' },
+    { name: 'Vert', color: '#bbf7d0' },
+    { name: 'Bleu', color: '#dbeafe' },
+    { name: 'Rose', color: '#fbcfe8' },
+    { name: 'Orange', color: '#fed7aa' },
+  ]
+
+  const githubEmojis = [
+    { emoji: '🚀', name: 'Fusée' },
+    { emoji: '⭐', name: 'Étoile' },
+    { emoji: '🎯', name: 'Cible' },
+    { emoji: '💡', name: 'Ampoule' },
+    { emoji: '🔥', name: 'Feu' },
+    { emoji: '✅', name: 'Check' },
+    { emoji: '❌', name: 'Croix' },
+    { emoji: '⚠️', name: 'Attention' },
+    { emoji: '📚', name: 'Livres' },
+    { emoji: '🛠️', name: 'Outils' },
+    { emoji: '📦', name: 'Package' },
+    { emoji: '🔧', name: 'Clé' },
+    { emoji: '🌟', name: 'Étoile brillante' },
+    { emoji: '💻', name: 'Ordinateur' },
+    { emoji: '📊', name: 'Graphique' },
+    { emoji: '🎨', name: 'Palette' },
+  ]
+
   const setTextColor = (color: string) => {
     const selection = editor.state.selection
     if (!selection.empty) {
       const selectedText = editor.state.doc.textBetween(selection.from, selection.to)
       editor.chain().focus().insertContent(`<span style="color: ${color}">${selectedText}</span>`).run()
     } else {
-      // Si rien n'est sélectionné, insérer un span vide pour commencer à taper en couleur
       editor.chain().focus().insertContent(`<span style="color: ${color}">Texte coloré</span>`).run()
+    }
+  }
+
+  const setHighlight = (color: string) => {
+    const selection = editor.state.selection
+    if (!selection.empty) {
+      const selectedText = editor.state.doc.textBetween(selection.from, selection.to)
+      editor.chain().focus().insertContent(`<span style="background-color: ${color}">${selectedText}</span>`).run()
+    } else {
+      editor.chain().focus().insertContent(`<span style="background-color: ${color}">Texte surligné</span>`).run()
     }
   }
 
@@ -421,6 +478,33 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         >
           <Settings className="w-4 h-4" />
         </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={alignImageLeft}
+          title="Aligner l'image à gauche"
+        >
+          <ImageLeft className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={alignImageCenter}
+          title="Centrer l'image"
+        >
+          <ImageCenter className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={alignImageRight}
+          title="Aligner l'image à droite"
+        >
+          <ImageRight className="w-4 h-4" />
+        </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
         
@@ -470,6 +554,48 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         
         <div className="w-px h-6 bg-gray-300 mx-1" />
         
+        <div className="flex items-center gap-1" title="Surlignage">
+          <Highlighter className="w-4 h-4 text-gray-600" />
+          {highlightColors.map((colorItem, index) => (
+            <button
+              key={index}
+              onClick={() => setHighlight(colorItem.color)}
+              className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
+              style={{ backgroundColor: colorItem.color }}
+              title={`Surligner en ${colorItem.name}`}
+            />
+          ))}
+        </div>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            title="Choisir un emoji"
+          >
+            <Smile className="w-4 h-4" />
+          </Button>
+          
+          {showEmojiPicker && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-50 grid grid-cols-8 gap-1">
+              {githubEmojis.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => insertEmoji(item.emoji)}
+                  className="p-1 hover:bg-gray-100 rounded text-lg"
+                  title={item.name}
+                >
+                  {item.emoji}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
         
         <Button
           variant="ghost"

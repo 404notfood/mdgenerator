@@ -139,9 +139,32 @@ export default function Home() {
                 .prose span[style*="color"] {
                   /* Préserver les couleurs inline */
                 }
+                .prose span[style*="background-color"] {
+                  /* Préserver le surlignage */
+                  padding: 2px 4px;
+                  border-radius: 3px;
+                }
                 .prose p {
                   margin: 0.75rem 0;
                   line-height: 1.6;
+                }
+                .prose img {
+                  border-radius: 0.5rem;
+                  max-width: 100%;
+                  height: auto;
+                  cursor: pointer;
+                }
+                .prose img[style*="margin: 0 auto"] {
+                  display: block;
+                  margin: 1rem auto;
+                }
+                .prose img[style*="margin: 0 0 0 auto"] {
+                  display: block;
+                  margin: 1rem 0 1rem auto;
+                }
+                .prose img[style*="margin: 0;"] {
+                  display: block;
+                  margin: 1rem 0;
                 }
               `}</style>
               <div dangerouslySetInnerHTML={{ __html: content }} />
