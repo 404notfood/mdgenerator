@@ -5,6 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import TextAlign from '@tiptap/extension-text-align'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
@@ -22,7 +23,12 @@ import {
   Undo,
   Redo,
   Link as LinkIcon,
-  Image as ImageIcon
+  Image as ImageIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Settings
 } from 'lucide-react'
 
 interface TipTapEditorProps {
@@ -45,17 +51,35 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: {
+          HTMLAttributes: {
+            class: 'list-disc list-inside',
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: 'list-decimal list-inside',
+          },
+        },
+      }),
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-lg max-w-full h-auto',
+          class: 'rounded-lg max-w-full h-auto cursor-pointer',
+          style: 'max-width: 300px; height: auto;',
         },
+        allowBase64: true,
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
           class: 'text-blue-500 hover:text-blue-700 underline cursor-pointer',
         },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right', 'justify'],
+        defaultAlignment: 'left',
       }),
       CodeBlockLowlight.configure({
         lowlight,
@@ -72,6 +96,18 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[500px] p-4',
+        spellcheck: 'false',
+      },
+      handleKeyDown: (view, event) => {
+        // Fix pour éviter l'erreur TransformError sur Enter
+        if (event.key === 'Enter' && !event.shiftKey) {
+          const { state } = view
+          const { selection } = state
+          if (selection.empty && selection.$from.parent.type.name === 'paragraph') {
+            return false // Laisser TipTap gérer normalement
+          }
+        }
+        return false
       },
     },
   })
@@ -84,6 +120,17 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     const url = window.prompt('URL de l\'image')
     if (url) {
       editor.chain().focus().setImage({ src: url }).run()
+    }
+  }
+
+  const resizeImage = () => {
+    const width = window.prompt('Largeur de l\'image (en pixels, ex: 300)', '300')
+    if (width && !isNaN(Number(width))) {
+      const attrs = editor.getAttributes('image')
+      editor.chain().focus().updateAttributes('image', { 
+        ...attrs,
+        style: `max-width: ${width}px; height: auto;`
+      }).run()
     }
   }
 
