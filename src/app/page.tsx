@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Home() {
+  const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
   return (
     <div className="container mx-auto py-8">
       <div className="text-center mb-8">
@@ -27,8 +29,8 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <TipTapEditor
-              content="<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>"
-              onChange={(content) => console.log(content)}
+              content={content}
+              onChange={setContent}
             />
           </CardContent>
         </Card>
