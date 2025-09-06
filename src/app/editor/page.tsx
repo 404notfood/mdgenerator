@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ExportButtons } from '@/components/editor/export-buttons'
 
 export default function EditorPage() {
   const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
@@ -13,9 +14,13 @@ export default function EditorPage() {
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Éditeur README
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
           Créez des README professionnels avec notre éditeur Markdown WYSIWYG. 
         </p>
+        <ExportButtons 
+          content={content} 
+          htmlContent={content}
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">

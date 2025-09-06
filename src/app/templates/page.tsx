@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Eye, Download, Crown, Loader2 } from "lucide-react"
 import { useTemplates, TemplateCategory } from "@/hooks/use-templates"
+import { PurchaseButton } from "@/components/templates/purchase-button"
 import { useState } from "react"
 
 const categoryLabels: Record<TemplateCategory, string> = {
@@ -125,21 +126,19 @@ export default function TemplatesPage() {
                   <Eye className="w-4 h-4 mr-1" />
                   Aperçu
                 </Button>
-                <Button 
-                  size="sm" 
-                  className="flex-1"
-                  disabled={template.isPremium}
-                >
-                  <Download className="w-4 h-4 mr-1" />
-                  {template.price === 0 ? "Utiliser" : "Acheter"}
-                </Button>
+                <div className="flex-1">
+                  <PurchaseButton
+                    templateId={template.id}
+                    templateName={template.name}
+                    price={template.price}
+                    isPremium={template.isPremium}
+                    onPurchaseSuccess={() => {
+                      // Optionnel: rafraîchir la liste des templates
+                      window.location.reload()
+                    }}
+                  />
+                </div>
               </div>
-              
-              {template.isPremium && (
-                <p className="text-xs text-gray-500 mt-2 text-center">
-                  Nécessite un abonnement Premium
-                </p>
-              )}
             </CardContent>
           </Card>
           ))}
