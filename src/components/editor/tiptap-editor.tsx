@@ -7,6 +7,9 @@ import Link from '@tiptap/extension-link'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import TextAlign from '@tiptap/extension-text-align'
 import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableHeader from '@tiptap/extension-table-header'
+import TableCell from '@tiptap/extension-table-cell'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Emoji from '@tiptap/extension-emoji'
 import Details from '@tiptap/extension-details'
@@ -96,6 +99,9 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
           class: 'table-auto border-collapse border border-gray-300',
         },
       }),
+      TableRow,
+      TableHeader,
+      TableCell,
       HorizontalRule.configure({
         HTMLAttributes: {
           class: 'border-t-2 border-gray-300 my-4',
