@@ -10,6 +10,7 @@ const navigation = [
   { name: "Accueil", href: "/" },
   { name: "Éditeur", href: "/editor" },
   { name: "Templates", href: "/templates" },
+  { name: "Premium", href: "/premium-demo" },
   { name: "Tarifs", href: "/pricing" },
   { name: "Dashboard", href: "/dashboard" },
 ]

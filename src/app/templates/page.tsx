@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Eye, Download, Crown, Loader2 } from "lucide-react"
 import { useTemplates, TemplateCategory } from "@/hooks/use-templates"
 import { PurchaseButton } from "@/components/templates/purchase-button"
+import { PremiumTemplates } from "@/components/templates/premium-templates"
 import { useState } from "react"
 
 const categoryLabels: Record<TemplateCategory, string> = {
@@ -22,11 +23,18 @@ const categoryLabels: Record<TemplateCategory, string> = {
 export default function TemplatesPage() {
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory | undefined>()
   const [premiumFilter, setPremiumFilter] = useState<boolean | undefined>()
+  const [activeTab, setActiveTab] = useState<'gallery' | 'premium'>('gallery')
   
   const { templates, loading, error } = useTemplates({
     category: selectedCategory,
     premium: premiumFilter
   })
+
+  const handleSelectTemplate = (content: string) => {
+    // Store in localStorage for editor
+    localStorage.setItem('selectedTemplate', content)
+    window.location.href = '/editor'
+  }
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="text-center mb-12">
@@ -40,8 +48,30 @@ export default function TemplatesPage() {
         </p>
       </div>
 
-      {/* Filtres */}
-      <div className="flex flex-wrap gap-2 justify-center mb-8">
+      {/* Tabs */}
+      <div className="flex gap-2 justify-center mb-8">
+        <Button
+          variant={activeTab === 'gallery' ? 'default' : 'outline'}
+          onClick={() => setActiveTab('gallery')}
+        >
+          Galerie Standard
+        </Button>
+        <Button
+          variant={activeTab === 'premium' ? 'default' : 'outline'}
+          onClick={() => setActiveTab('premium')}
+          className="gap-2"
+        >
+          <Crown className="w-4 h-4" />
+          Templates Premium
+        </Button>
+      </div>
+
+      {activeTab === 'premium' ? (
+        <PremiumTemplates onSelectTemplate={handleSelectTemplate} />
+      ) : (
+        <>
+          {/* Filtres */}
+          <div className="flex flex-wrap gap-2 justify-center mb-8">
         <Button 
           variant={!selectedCategory && premiumFilter === undefined ? "default" : "outline"} 
           size="sm"
@@ -156,10 +186,12 @@ export default function TemplatesPage() {
             </div>
           )}
         </div>
+        </>
       )}
 
       {/* CTA */}
-      <div className="text-center mt-16">
+      {activeTab === 'gallery' && (
+        <div className="text-center mt-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Besoin de plus de templates ?
         </h2>
@@ -171,7 +203,8 @@ export default function TemplatesPage() {
             Voir les abonnements
           </Link>
         </Button>
-      </div>
+        </div>
+      )}
     </div>
   )
 }
