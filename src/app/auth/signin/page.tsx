@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { authClient } from "@/lib/auth-client"
+import { signIn } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,7 +20,7 @@ export default function SignInPage() {
     setError("")
 
     try {
-      await authClient.signIn.email({
+      await signIn.email({
         email,
         password,
         callbackURL: "/dashboard"
@@ -83,7 +83,7 @@ export default function SignInPage() {
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => authClient.signIn.social({
+            onClick={() => signIn.social({
               provider: "github",
               callbackURL: "/dashboard"
             })}

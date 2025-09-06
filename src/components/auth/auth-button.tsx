@@ -10,16 +10,16 @@ export function AuthButton() {
     return <Button disabled>Chargement...</Button>
   }
 
-  if (session.data) {
+  if (session) {
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">
-          Connecté comme {session.data.user.email}
+          Connecté comme {session.user.email}
         </span>
         <Button
           variant="outline"
           onClick={async () => {
-            await authClient.signOut({
+            await signOut({
               fetchOptions: {
                 onSuccess: () => {
                   window.location.href = "/"
@@ -39,7 +39,7 @@ export function AuthButton() {
       <Button
         variant="outline"
         onClick={async () => {
-          await authClient.signIn.social({
+          await signIn.social({
             provider: "github",
             callbackURL: "/dashboard"
           })

@@ -1,6 +1,6 @@
 "use client"
 
-import { authClient } from "@/lib/auth-client"
+import { useSession } from "@/lib/auth-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -65,10 +65,19 @@ const demoPurchases: Purchase[] = [
 ]
 
 export default function DashboardPage() {
-  const session = authClient.useSession()
+  const { data: session, isPending } = useSession()
+
+  // Loading state
+  if (isPending) {
+    return (
+      <div className="container mx-auto py-12 px-4 text-center">
+        <h1 className="text-2xl font-bold mb-4">Chargement...</h1>
+      </div>
+    )
+  }
 
   // Redirect to login if not authenticated
-  if (!session.data) {
+  if (!session) {
     return (
       <div className="container mx-auto py-12 px-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Accès refusé</h1>
@@ -82,7 +91,7 @@ export default function DashboardPage() {
     )
   }
 
-  const user = session.data.user
+  const user = session.user
 
   return (
     <div className="container mx-auto py-8 px-4">
