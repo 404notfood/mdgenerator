@@ -65,6 +65,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       }),
     ],
     content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())
     },

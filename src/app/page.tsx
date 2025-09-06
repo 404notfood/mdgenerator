@@ -1,3 +1,5 @@
+'use client'
+
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
