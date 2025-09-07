@@ -114,7 +114,7 @@ export function useTemplateAccess(templateId: string) {
           setHasAccess(false)
           setReason("unauthenticated")
         }
-      } catch (err) {
+      } catch {
         setHasAccess(false)
         setReason("error")
       } finally {

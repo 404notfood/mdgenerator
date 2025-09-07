@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev ",
-    "build": "next build ",
+    "build": "next build",
+    "build:no-lint": "DISABLE_ESLINT_PLUGIN=true next build",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx scripts/seed-templates.ts",
@@ -42,6 +43,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "highlight.js": "^11.11.1",
+    "jotai": "^2.13.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",

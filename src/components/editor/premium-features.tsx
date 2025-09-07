@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+// import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePermissions } from '@/hooks/use-permissions'
@@ -23,7 +23,7 @@ import {
   AlertTriangle,
   Info,
   CheckCircle,
-  X,
+  // X,
   Plus
 } from 'lucide-react'
 
@@ -153,7 +153,7 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
   }
 
   const generateBadgeUrl = (badge: DynamicBadge): string => {
-    let url = `https://img.shields.io/badge/${encodeURIComponent(badge.label)}-${encodeURIComponent(badge.message)}-${badge.color}`
+    const url = `https://img.shields.io/badge/${encodeURIComponent(badge.label)}-${encodeURIComponent(badge.message)}-${badge.color}`
     
     const params = new URLSearchParams()
     if (badge.style !== 'flat') params.set('style', badge.style)
@@ -339,7 +339,7 @@ export function CalloutGenerator({ onInsert }: CalloutGeneratorProps) {
           Générateur de callouts
         </CardTitle>
         <CardDescription>
-          Ajoutez des callouts colorés pour mettre en valeur l'information
+          Ajoutez des callouts colorés pour mettre en valeur l&apos;information
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

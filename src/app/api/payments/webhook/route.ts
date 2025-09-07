@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     // 2. Extraire les données de paiement
     // 3. Mettre à jour le statut de l'achat
     
-    const { order_id, status, amount } = body
+    const { order_id, status } = body
 
     if (!order_id) {
       return NextResponse.json(

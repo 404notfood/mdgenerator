@@ -93,7 +93,7 @@ export function SessionSecurityStatus() {
         <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
           <ul className="text-xs text-gray-600 space-y-1">
             <li>✓ Connexion HTTPS chiffrée</li>
-            <li>✓ Token d'authentification sécurisé</li>
+            <li>✓ Token d&apos;authentification sécurisé</li>
             <li>✓ Protection CSRF active</li>
             <li>✓ Headers de sécurité configurés</li>
             <li>✓ Rate limiting activé</li>

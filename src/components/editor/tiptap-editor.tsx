@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
-import { Mark, mergeAttributes } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -110,7 +109,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
             align: {
               default: 'left',
               parseHTML: (element: HTMLElement) => element.getAttribute('data-align'),
-              renderHTML: (attributes: any) => {
+              renderHTML: (attributes: { align?: string }) => {
                 if (!attributes.align) return {}
                 return { 'data-align': attributes.align }
               },
@@ -226,7 +225,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       if (width && !isNaN(Number(width))) {
         const currentAttrs = editor.getAttributes('image')
         const currentAlign = currentAttrs.align || 'left'
-        const currentStyle = currentAttrs.style || ''
+        // const currentStyle = currentAttrs.style || ''
         
         // Préserver l'alignement existant et ajouter la largeur
         let newStyle = `width: ${width}px; height: auto;`

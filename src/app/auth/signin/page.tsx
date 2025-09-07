@@ -94,7 +94,7 @@ export default function SignInPage() {
           <p className="text-center text-sm text-muted-foreground">
             Pas encore de compte ?{" "}
             <Link href="/auth/signup" className="underline">
-              S'inscrire
+              S&apos;inscrire
             </Link>
           </p>
         </CardContent>

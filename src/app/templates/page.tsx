@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Eye, Download, Crown, Loader2 } from "lucide-react"
+import { Eye, Crown, Loader2 } from "lucide-react"
 import { useTemplates, TemplateCategory } from "@/hooks/use-templates"
 import { PurchaseButton } from "@/components/templates/purchase-button"
 import { PremiumTemplates } from "@/components/templates/premium-templates"
@@ -45,7 +45,7 @@ export default function TemplatesPage() {
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Choisissez parmi notre collection de templates professionnels pour créer 
           des README qui impressionnent. Commencez avec nos templates gratuits ou 
-          débloquez l'accès aux templates premium.
+          débloquez l&apos;accès aux templates premium.
         </p>
       </div>
 
@@ -198,7 +198,7 @@ export default function TemplatesPage() {
             Besoin de plus de templates ?
           </h2>
           <p className="text-gray-600 mb-6">
-            Débloquez l'accès à tous nos templates premium et fonctionnalités avancées
+            Débloquez l&apos;accès à tous nos templates premium et fonctionnalités avancées
           </p>
           <Button asChild size="lg">
             <Link href="/pricing">

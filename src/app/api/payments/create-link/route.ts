@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     const mockPaymentLink = `https://revolut.me/mock-payment?amount=${(template.price / 100).toFixed(2)}&reference=${purchase.id}`
 
     // Mettre à jour l'achat avec le lien de paiement fictif
-    const updatedPurchase = await prisma.purchase.update({
+    await prisma.purchase.update({
       where: { id: purchase.id },
       data: {
         paymentLink: mockPaymentLink,

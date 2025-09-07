@@ -100,7 +100,7 @@ export function PurchaseButton({
             Acheter le template premium
           </DialogTitle>
           <DialogDescription>
-            Débloquez l'accès au template "{templateName}"
+            Débloquez l&apos;accès au template &quot;{templateName}&quot;
           </DialogDescription>
         </DialogHeader>
         
@@ -179,7 +179,7 @@ export function PurchaseButton({
                   Paiement réussi !
                 </h3>
                 <p className="text-green-700 mb-4">
-                  Vous avez maintenant accès au template "{templateName}"
+                  Vous avez maintenant accès au template &quot;{templateName}&quot;
                 </p>
                 <Button onClick={resetDialog}>
                   Continuer

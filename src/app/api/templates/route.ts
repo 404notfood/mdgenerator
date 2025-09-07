@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const templates = await prisma.template.findMany({
       where: {
         isActive: true,
-        ...(category && { category: category as any }),
+        ...(category && { category: category as "STARTUP" | "OPEN_SOURCE" | "API" | "MOBILE" | "WEB" | "DATA_SCIENCE" | "GENERAL" }),
         ...(isPremium !== null && { isPremium: isPremium === "true" })
       },
       orderBy: [

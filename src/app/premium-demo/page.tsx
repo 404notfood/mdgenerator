@@ -1,9 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { 
   Crown, 
@@ -112,7 +111,7 @@ export default function PremiumDemoPage() {
         </div>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
           Découvrez nos outils avancés pour créer des README professionnels qui se démarquent.
-          Badges dynamiques, callouts GitHub natifs, et palette d'icônes complète.
+          Badges dynamiques, callouts GitHub natifs, et palette d&apos;icônes complète.
         </p>
         <div className="flex gap-4 justify-center">
           <Button asChild size="lg">
@@ -123,7 +122,7 @@ export default function PremiumDemoPage() {
           </Button>
           <Button variant="outline" size="lg" asChild>
             <Link href="/editor">
-              Essayer l'éditeur
+              Essayer l&apos;éditeur
             </Link>
           </Button>
         </div>
@@ -171,7 +170,7 @@ export default function PremiumDemoPage() {
               </h3>
               <p className="text-blue-800 text-sm">
                 Interface intuitive pour créer vos badges : choisissez le style, les couleurs, 
-                l'icône et le lien. Aperçu en temps réel et insertion automatique dans l'éditeur.
+                l&apos;icône et le lien. Aperçu en temps réel et insertion automatique dans l&apos;éditeur.
               </p>
             </div>
           </div>
@@ -186,7 +185,7 @@ export default function PremiumDemoPage() {
             <h2 className="text-3xl font-bold text-gray-900">Callouts GitHub</h2>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Utilisez les callouts natifs de GitHub pour mettre en valeur l'information importante.
+            Utilisez les callouts natifs de GitHub pour mettre en valeur l&apos;information importante.
             5 types disponibles avec couleurs et icônes distinctives.
           </p>
         </div>
@@ -226,7 +225,7 @@ export default function PremiumDemoPage() {
               </h3>
               <p className="text-yellow-800 text-sm">
                 Ces callouts sont rendus nativement par GitHub avec les couleurs et icônes officielles.
-                Parfait pour la documentation technique et les guides d'utilisation.
+                Parfait pour la documentation technique et les guides d&apos;utilisation.
               </p>
             </div>
           </div>
@@ -241,7 +240,7 @@ export default function PremiumDemoPage() {
             <h2 className="text-3xl font-bold text-gray-900">Palette d'Icônes</h2>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Accédez à des centaines d'icônes DevIcons pour illustrer votre stack technique.
+            Accédez à des centaines d&apos;icônes DevIcons pour illustrer votre stack technique.
             Organisées par catégories pour un accès rapide.
           </p>
         </div>
@@ -285,7 +284,7 @@ export default function PremiumDemoPage() {
                 Insertion automatique
               </h3>
               <p className="text-purple-800 text-sm">
-                Cliquez sur une icône pour l'insérer automatiquement dans votre README.
+                Cliquez sur une icône pour l&apos;insérer automatiquement dans votre README.
                 Taille et alignement optimisés pour une présentation professionnelle.
               </p>
             </div>

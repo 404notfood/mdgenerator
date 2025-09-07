@@ -22,7 +22,7 @@ const premiumTemplates: PremiumTemplate[] = [
   {
     id: 'enterprise-api',
     name: 'API Enterprise',
-    description: 'Template complet pour API d\'entreprise avec badges dynamiques et callouts',
+    description: 'Template complet pour API d&apos;entreprise avec badges dynamiques et callouts',
     category: 'API',
     features: ['Badges dynamiques', 'Callouts colorés', 'Icônes tech', 'Documentation complète'],
     content: `# 🚀 Enterprise API

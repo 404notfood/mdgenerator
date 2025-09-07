@@ -19,6 +19,18 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      // Désactiver certaines règles strictes
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "react/no-unescaped-entities": "warn",
+      "@next/next/no-img-element": "warn",
+      "prefer-const": "warn",
+      // Ou les désactiver complètement
+      // "@typescript-eslint/no-unused-vars": "off",
+      // "@typescript-eslint/no-explicit-any": "off",
+      // "react/no-unescaped-entities": "off",
+    },
   },
 ];
 

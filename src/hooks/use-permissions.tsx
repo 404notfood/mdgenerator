@@ -44,7 +44,7 @@ export function usePermissions() {
   useEffect(() => {
     if (session?.user) {
       // For now, default to USER role since role might not be in session yet
-      const userRole = ((session.user as any).role as UserRole) || 'USER'
+      const userRole = ((session.user as { role?: string }).role as UserRole) || 'USER'
       setRole(userRole)
       setPermissions(rolePermissions[userRole])
     } else {

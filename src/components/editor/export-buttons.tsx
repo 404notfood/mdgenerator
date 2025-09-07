@@ -89,7 +89,7 @@ export function ExportButtons({ content, htmlContent }: ExportButtonsProps) {
                 onChange={(e) => setFilename(e.target.value)}
               />
               <p className="text-sm text-muted-foreground mt-1">
-                L'extension .md sera ajoutée automatiquement
+                L&apos;extension .md sera ajoutée automatiquement
               </p>
             </div>
             {error && (

@@ -97,7 +97,7 @@ export default function PricingPage() {
                   <td className="text-center py-4 px-6">Illimités</td>
                 </tr>
                 <tr className="bg-gray-50">
-                  <td className="py-4 px-6">Upload d'images</td>
+                  <td className="py-4 px-6">Upload d&apos;images</td>
                   <td className="text-center py-4 px-6">-</td>
                   <td className="text-center py-4 px-6">100MB</td>
                   <td className="text-center py-4 px-6">1GB</td>
