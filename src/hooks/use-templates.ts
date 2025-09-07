@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 export type TemplateCategory = "STARTUP" | "OPEN_SOURCE" | "API" | "MOBILE" | "WEB" | "DATA_SCIENCE" | "GENERAL"
 
@@ -25,35 +25,35 @@ export function useTemplates(options: UseTemplatesOptions = {}) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchTemplates() {
-      try {
-        setLoading(true)
-        setError(null)
+  const fetchTemplates = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-        const searchParams = new URLSearchParams()
-        if (options.category) searchParams.set("category", options.category)
-        if (options.premium !== undefined) searchParams.set("premium", options.premium.toString())
+      const searchParams = new URLSearchParams()
+      if (options.category) searchParams.set("category", options.category)
+      if (options.premium !== undefined) searchParams.set("premium", options.premium.toString())
 
-        const response = await fetch(`/api/templates?${searchParams.toString()}`)
-        
-        if (!response.ok) {
-          throw new Error("Erreur lors du chargement des templates")
-        }
-
-        const data = await response.json()
-        setTemplates(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Une erreur est survenue")
-      } finally {
-        setLoading(false)
+      const response = await fetch(`/api/templates?${searchParams.toString()}`)
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors du chargement des templates")
       }
-    }
 
-    fetchTemplates()
+      const data = await response.json()
+      setTemplates(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue")
+    } finally {
+      setLoading(false)
+    }
   }, [options.category, options.premium])
 
-  return { templates, loading, error, refetch: () => fetchTemplates() }
+  useEffect(() => {
+    fetchTemplates()
+  }, [fetchTemplates])
+
+  return { templates, loading, error, refetch: fetchTemplates }
 }
 
 export function useTemplate(id: string) {

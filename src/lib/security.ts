@@ -68,7 +68,7 @@ export function validateOrigin(request: NextRequest): boolean {
   ].filter(Boolean)
   
   return allowedOrigins.some(allowed => 
-    origin?.startsWith(allowed) || referer?.startsWith(allowed)
+    allowed && ((origin && origin.startsWith(allowed)) || (referer && referer.startsWith(allowed)))
   )
 }
 

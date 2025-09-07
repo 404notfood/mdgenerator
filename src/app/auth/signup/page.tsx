@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { signUp } from "@/lib/auth-client"
+import { signUp, signIn } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -96,7 +96,7 @@ export default function SignUpPage() {
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => signUp.social({
+            onClick={() => signIn.social({
               provider: "github",
               callbackURL: "/dashboard"
             })}

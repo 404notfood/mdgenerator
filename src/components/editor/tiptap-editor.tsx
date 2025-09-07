@@ -103,25 +103,26 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         horizontalRule: false, // Désactiver le horizontalRule du StarterKit  
         codeBlock: false, // Désactiver le codeBlock du StarterKit
       }),
-      Image.configure({
-        HTMLAttributes: {
-          class: 'rounded-lg cursor-pointer',
-        },
-        allowBase64: true,
-        inline: false,
+      Image.extend({
         addAttributes() {
           return {
             ...this.parent?.(),
             align: {
               default: 'left',
-              parseHTML: element => element.getAttribute('data-align'),
-              renderHTML: attributes => {
+              parseHTML: (element: HTMLElement) => element.getAttribute('data-align'),
+              renderHTML: (attributes: any) => {
                 if (!attributes.align) return {}
                 return { 'data-align': attributes.align }
               },
             },
           }
         },
+      }).configure({
+        HTMLAttributes: {
+          class: 'rounded-lg cursor-pointer',
+        },
+        allowBase64: true,
+        inline: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -167,9 +168,11 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
             const fileReader = new FileReader()
             fileReader.readAsDataURL(file)
             fileReader.onload = () => {
-              currentEditor.chain().focus().setImage({
-                src: fileReader.result,
-              }).run()
+              if (fileReader.result && typeof fileReader.result === 'string') {
+                currentEditor.chain().focus().setImage({
+                  src: fileReader.result,
+                }).run()
+              }
             }
           })
         },
