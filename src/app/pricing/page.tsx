@@ -6,24 +6,24 @@ import Link from "next/link"
 
 const faqs = [
   {
-    question: "Puis-je annuler mon abonnement à tout moment ?",
-    answer: "Oui, vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Votre accès aux fonctionnalités premium sera maintenu jusqu'à la fin de votre période de facturation."
+    question: "Puis-je utiliser la version gratuite indéfiniment ?",
+    answer: "Oui ! La version gratuite inclut toutes les fonctionnalités de base pour créer des README professionnels. Aucune limite de temps."
   },
   {
-    question: "Que se passe-t-il si je dépasse mes limites ?",
-    answer: "Nous vous enverrons une notification lorsque vous approchez de vos limites. Vous pouvez toujours mettre à niveau votre plan à tout moment."
+    question: "Que comprend l'achat unique Premium ?",
+    answer: "L'achat Premium à 5€ vous donne accès à vie à tous les templates premium, exports HTML/PDF, badges dynamiques, et callouts GitHub."
   },
   {
-    question: "Offrez-vous des remises pour les équipes ?",
-    answer: "Oui, nous offrons des remises dégressives pour les équipes de 5 utilisateurs ou plus. Contactez-nous pour obtenir un devis personnalisé."
+    question: "Y a-t-il des frais récurrents ?",
+    answer: "Non ! L'achat Premium est unique. Une fois payé, vous gardez l'accès à toutes les fonctionnalités à vie."
   },
   {
     question: "Comment fonctionnent les paiements ?",
-    answer: "Tous les paiements sont sécurisés et traités par Revolut Business. Nous acceptons toutes les cartes de crédit principales et les virements bancaires."
+    answer: "Les paiements sont sécurisés et traités par Revolut Business. Nous acceptons toutes les cartes de crédit principales."
   },
   {
-    question: "Puis-je essayer les fonctionnalités premium ?",
-    answer: "Tous les nouveaux utilisateurs bénéficient d'un essai gratuit de 7 jours pour tester toutes les fonctionnalités premium."
+    question: "Puis-je tester les fonctionnalités premium avant d'acheter ?",
+    answer: "Oui ! Visitez notre page de démonstration pour voir toutes les fonctionnalités premium en action."
   }
 ]
 
@@ -34,11 +34,11 @@ export default function PricingPage() {
       <div className="bg-gradient-to-b from-blue-50 to-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Choisissez votre plan
+            Tarification simple
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Commencez gratuitement et évoluez à votre rythme. 
-            Tous les plans incluent un support de qualité et une garantie satisfait ou remboursé.
+            Commencez gratuitement et débloquez toutes les fonctionnalités avec un seul achat de 5€. 
+            Aucun abonnement, aucun frais récurrent.
           </p>
         </div>
       </div>

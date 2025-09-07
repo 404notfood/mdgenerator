@@ -8,63 +8,42 @@ const plans = [
     name: "Gratuit",
     price: "0€",
     period: "pour toujours",
-    description: "Parfait pour débuter",
+    description: "Parfait pour commencer",
     features: [
       "Éditeur WYSIWYG complet",
       "Export Markdown (.md)",
-      "3 templates de base",
-      "Support communauté",
+      "Templates de base",
+      "Upload d'images",
     ],
     notIncluded: [
       "Templates premium",
-      "Export HTML stylé",
-      "Intégration GitHub",
+      "Export HTML/PDF",
       "Badges dynamiques",
-      "Callouts premium"
+      "Callouts premium",
+      "Palette d'icônes"
     ],
-    cta: "Commencer",
+    cta: "Commencer gratuitement",
     href: "/editor",
     popular: false
   },
   {
-    name: "Pro",
-    price: "9€",
-    period: "par mois",
-    description: "Pour les développeurs sérieux",
+    name: "Premium",
+    price: "5€",
+    period: "achat unique",
+    description: "Toutes les fonctionnalités à vie",
     features: [
       "Tout du plan Gratuit",
-      "50+ templates premium",
-      "Export HTML avec styles",
-      "Intégration GitHub directe",
-      "Badges dynamiques illimités",
-      "Callouts premium",
-      "Upload d'images",
+      "Tous les templates premium",
+      "Export HTML et PDF",
+      "Générateur de badges",
+      "Callouts GitHub natifs",
+      "Palette d'icônes complète",
       "Support prioritaire"
     ],
     notIncluded: [],
-    cta: "Essayer Pro",
-    href: "/pricing/pro",
+    cta: "Acheter Premium",
+    href: "/premium-demo",
     popular: true
-  },
-  {
-    name: "Entreprise",
-    price: "29€",
-    period: "par mois",
-    description: "Pour les équipes",
-    features: [
-      "Tout du plan Pro",
-      "Templates personnalisés",
-      "Branding personnalisé",
-      "API d'intégration",
-      "Analytics avancées",
-      "Support dédié",
-      "Formation équipe",
-      "SLA garanti"
-    ],
-    notIncluded: [],
-    cta: "Contacter",
-    href: "/contact",
-    popular: false
   }
 ]
 
@@ -81,7 +60,7 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
             <Card 
               key={index} 
