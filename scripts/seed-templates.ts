@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TemplateCategory } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -6,7 +6,7 @@ const templates = [
   {
     name: "Startup MVP",
     description: "Template complet pour présenter votre MVP startup avec sections essentielles",
-    category: "STARTUP",
+    category: TemplateCategory.STARTUP,
     price: 0,
     isPremium: false,
     content: `# 🚀 Nom de votre Startup
@@ -74,7 +74,7 @@ Nous cherchons des **investisseurs**, **cofondateurs** et **premiers utilisateur
   {
     name: "Open Source Pro",
     description: "Template professionnel pour projets open source avec badges, documentation complète",
-    category: "OPEN_SOURCE",
+    category: TemplateCategory.OPEN_SOURCE,
     price: 990, // 9.90€
     isPremium: true,
     content: `# Project Name
@@ -147,7 +147,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   {
     name: "API Documentation",
     description: "Documentation complète pour APIs REST/GraphQL avec exemples de code",
-    category: "API",
+    category: TemplateCategory.API,
     price: 590, // 5.90€
     isPremium: true,
     content: `# API Documentation
@@ -285,7 +285,7 @@ Official SDKs available for:
   {
     name: "Mobile App",
     description: "Template pour applications mobiles iOS/Android avec stores badges",
-    category: "MOBILE",
+    category: TemplateCategory.MOBILE,
     price: 790, // 7.90€
     isPremium: true,
     content: `# 📱 App Name
@@ -399,7 +399,7 @@ We'd love to hear from you!
   {
     name: "Web Application",
     description: "Template moderne pour applications web avec tech stack et déployment",
-    category: "WEB",
+    category: TemplateCategory.WEB,
     price: 0,
     isPremium: false,
     content: `# 🌐 Web App Name
@@ -551,7 +551,7 @@ If you found this project helpful, please give it a ⭐!`,
   {
     name: "Data Science Project",
     description: "Template complet pour projets de data science avec notebooks et résultats",
-    category: "DATA_SCIENCE",
+    category: TemplateCategory.DATA_SCIENCE,
     price: 1290, // 12.90€
     isPremium: true,
     content: `# 📊 Data Science Project: [Project Title]
@@ -606,9 +606,9 @@ Clear description of the business problem or research question you're trying to 
 | **Target Variable** | Variable name (type) |
 
 ### Key Features
-- **Feature 1** (`dtype`): Description
-- **Feature 2** (`dtype`): Description  
-- **Feature 3** (`dtype`): Description
+- **Feature 1** (\`dtype\`): Description
+- **Feature 2** (\`dtype\`): Description  
+- **Feature 3** (\`dtype\`): Description
 
 ## 🔍 Exploratory Data Analysis
 
@@ -741,12 +741,25 @@ async function seedTemplates() {
 
   for (const template of templates) {
     try {
-      await prisma.template.upsert({
-        where: { name: template.name },
-        update: template,
-        create: template
+      // Vérifier si le template existe déjà
+      const existingTemplate = await prisma.template.findFirst({
+        where: { name: template.name }
       })
-      console.log(`✅ Created/Updated template: ${template.name}`)
+
+      if (existingTemplate) {
+        // Mettre à jour le template existant
+        await prisma.template.update({
+          where: { id: existingTemplate.id },
+          data: template
+        })
+        console.log(`🔄 Updated template: ${template.name}`)
+      } else {
+        // Créer un nouveau template
+        await prisma.template.create({
+          data: template
+        })
+        console.log(`✅ Created template: ${template.name}`)
+      }
     } catch (error) {
       console.error(`❌ Error creating template ${template.name}:`, error)
     }
