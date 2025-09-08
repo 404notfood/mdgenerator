@@ -14,8 +14,10 @@ import {
   Trash2,
   Plus,
   Calendar,
-  Clock
+  Clock,
+  Github
 } from "lucide-react"
+import { GitHubImportDialog } from "@/components/dashboard/github-import-dialog"
 
 // Types temporaires (seront remplacés par les vraies données)
 interface Document {
@@ -106,6 +108,16 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          {/* Import GitHub - Premium/Admin seulement */}
+          {((user as any).role === 'ADMIN' || demoPurchases.length > 0) && (
+            <GitHubImportDialog>
+              <Button variant="outline">
+                <Github className="w-4 h-4 mr-2" />
+                Importer de GitHub
+              </Button>
+            </GitHubImportDialog>
+          )}
+          
           <Button asChild>
             <Link href="/editor">
               <Plus className="w-4 h-4 mr-2" />
@@ -185,12 +197,24 @@ export default function DashboardPage() {
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Documents récents</h2>
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/editor">
-                <Plus className="w-4 h-4 mr-1" />
-                Nouveau
-              </Link>
-            </Button>
+            <div className="flex gap-2">
+              {/* Import GitHub - Premium/Admin seulement */}
+              {((user as any).role === 'ADMIN' || demoPurchases.length > 0) && (
+                <GitHubImportDialog>
+                  <Button variant="ghost" size="sm">
+                    <Github className="w-4 h-4 mr-1" />
+                    GitHub
+                  </Button>
+                </GitHubImportDialog>
+              )}
+              
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/editor">
+                  <Plus className="w-4 h-4 mr-1" />
+                  Nouveau
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-4">

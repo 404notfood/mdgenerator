@@ -82,7 +82,7 @@ export function Footer() {
         <div className="border-t pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © 2024 README Generator. Tous droits réservés.
+              © 2025 README Generator. Tous droits réservés.
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-500 text-sm">Paiements sécurisés par</span>

@@ -1,33 +1,69 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExportButtons } from '@/components/editor/export-buttons'
 import { ImageUpload } from '@/components/editor/image-upload'
 import { PremiumFeatures } from '@/components/editor/premium-features'
 
-export default function EditorPage() {
-  const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
+function EditorContent() {
+  const searchParams = useSearchParams()
+  const documentId = searchParams.get('id')
   
-  // Load template from localStorage if available
+  const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
+  const [loading, setLoading] = useState(false)
+  const [documentTitle, setDocumentTitle] = useState("")
+  
+  // Load document from ID or template from localStorage
   React.useEffect(() => {
-    const selectedTemplate = localStorage.getItem('selectedTemplate')
-    if (selectedTemplate) {
-      setContent(selectedTemplate)
-      localStorage.removeItem('selectedTemplate') // Clean up
+    const loadContent = async () => {
+      if (documentId) {
+        setLoading(true)
+        try {
+          const response = await fetch(`/api/documents/${documentId}`)
+          if (response.ok) {
+            const document = await response.json()
+            setContent(document.content)
+            setDocumentTitle(document.title)
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement du document:', error)
+        } finally {
+          setLoading(false)
+        }
+      } else {
+        // Load template from localStorage if available
+        const selectedTemplate = localStorage.getItem('selectedTemplate')
+        if (selectedTemplate) {
+          setContent(selectedTemplate)
+          localStorage.removeItem('selectedTemplate') // Clean up
+        }
+      }
     }
-  }, [])
+    
+    loadContent()
+  }, [documentId])
   
   const handleInsertContent = (newContent: string) => {
     setContent(prev => prev + '\n\n' + newContent)
   }
   
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Chargement du document...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto py-8">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Éditeur README
+          {documentTitle || "Éditeur README"}
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
           Créez des README professionnels avec notre éditeur Markdown WYSIWYG et les fonctionnalités premium.
@@ -85,5 +121,18 @@ export default function EditorPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function EditorPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-8 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Chargement...</p>
+      </div>
+    }>
+      <EditorContent />
+    </Suspense>
   )
 }
