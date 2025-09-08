@@ -10,9 +10,10 @@ import { PremiumFeatures } from '@/components/editor/premium-features'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useSession } from '@/lib/auth-client'
 import Link from 'next/link'
-import { Crown, AlertTriangle } from 'lucide-react'
+import { Crown, AlertTriangle, X } from 'lucide-react'
 
 function EditorContent() {
   const searchParams = useSearchParams()
@@ -27,12 +28,21 @@ function EditorContent() {
   // Vérifier si l'utilisateur est premium (a acheté des templates) ou admin
   const isPremium = (session?.user as any)?.role === 'ADMIN' || false // TODO: vérifier les achats
   
+  // Fonction pour convertir les markdown badges en HTML pour l'aperçu
+  const convertMarkdownToPreview = (content: string) => {
+    // Convertir les badges markdown en images HTML
+    return content.replace(
+      /!\[([^\]]*)\]\((https:\/\/img\.shields\.io[^)]+)\)/g,
+      '<img src="$2" alt="$1" style="display: inline-block; margin: 2px;" />'
+    )
+  }
+  
   // Calculer le nombre de caractères (texte seulement, sans HTML)
   const textContent = content.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ')
   const characterCount = textContent.length
-  const CHARACTER_LIMIT = isPremium ? Infinity : 300
-  const isOverLimit = !isPremium && characterCount > 300
-  const remainingCharacters = isPremium ? Infinity : Math.max(0, 300 - characterCount)
+  const CHARACTER_LIMIT = isPremium ? Infinity : 500
+  const isOverLimit = !isPremium && characterCount > 500
+  const remainingCharacters = isPremium ? Infinity : Math.max(0, 500 - characterCount)
   
   // Load document from ID or template from localStorage
   React.useEffect(() => {
@@ -67,7 +77,7 @@ function EditorContent() {
   const handleInsertContent = (newContent: string) => {
     if (!isPremium) {
       const newTextLength = (content + '\n\n' + newContent).replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
-      if (newTextLength > 300) {
+      if (newTextLength > 500) {
         setShowPremiumModal(true)
         return
       }
@@ -78,9 +88,11 @@ function EditorContent() {
   const handleContentChange = (newContent: string) => {
     if (!isPremium) {
       const newTextLength = newContent.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
-      if (newTextLength > 300) {
+      if (newTextLength > 500) {
         // Permettre la suppression mais pas l'ajout
         if (newTextLength > characterCount) {
+          // Afficher la popup premium et empêcher la modification
+          setShowPremiumModal(true)
           return
         }
       }
@@ -109,7 +121,7 @@ function EditorContent() {
         {/* Compteur de caractères */}
         <div className="mb-6">
           <div className="flex justify-center items-center gap-4">
-            <Badge variant={isOverLimit ? "destructive" : characterCount > 250 ? "secondary" : "default"}>
+            <Badge variant={isOverLimit ? "destructive" : characterCount > 400 ? "secondary" : "default"}>
               {isPremium ? (
                 <div className="flex items-center gap-1">
                   <Crown className="w-3 h-3" />
@@ -137,7 +149,7 @@ function EditorContent() {
             <AlertDescription className="text-red-700 font-semibold text-center">
               <div className="text-lg mb-2">Limite de caractères dépassée !</div>
               <div className="text-sm mb-4">
-                Vous avez dépassé la limite de 300 caractères pour les comptes gratuits.
+                Vous avez dépassé la limite de 500 caractères pour les comptes gratuits.
                 Passez au Premium pour un accès illimité.
               </div>
               <Button asChild className="bg-red-600 hover:bg-red-700">
@@ -182,7 +194,36 @@ function EditorContent() {
 
         {/* Premium Features Sidebar */}
         <div className="space-y-6">
-          <PremiumFeatures onInsert={handleInsertContent} />
+          {isPremium ? (
+            <PremiumFeatures onInsert={handleInsertContent} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-yellow-500" />
+                  Fonctionnalités Premium
+                </CardTitle>
+                <CardDescription>
+                  Débloquez badges, callouts et icônes avec Premium
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <div className="text-gray-600 text-sm">
+                  ✨ Badges professionnels<br/>
+                  💬 Callouts avancés<br/>
+                  🎨 Palette d'icônes<br/>
+                  📤 Export GitHub<br/>
+                  ♾️ Caractères illimités
+                </div>
+                <Button asChild className="w-full">
+                  <Link href="/pricing">
+                    <Crown className="w-4 h-4 mr-2" />
+                    Passer au Premium - 5€
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -197,11 +238,42 @@ function EditorContent() {
           </CardHeader>
           <CardContent>
             <div className="bg-gray-50 p-4 rounded-lg min-h-[300px] border prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:my-8 [&_h1]:text-gray-800 [&_h1]:border-b-2 [&_h1]:border-gray-200 [&_h1]:pb-2 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:my-6 [&_h2]:text-gray-700 [&_h2]:border-b [&_h2]:border-gray-200 [&_h2]:pb-1 [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:my-5 [&_h3]:text-gray-600 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:ml-4 [&_li]:mb-1 [&_img]:rounded-lg [&_img]:max-w-full [&_img]:h-auto [&_img]:cursor-pointer [&_hr]:border-0 [&_hr]:border-t-2 [&_hr]:border-gray-300 [&_hr]:my-8 [&_table]:border-collapse [&_table]:w-full [&_table]:my-4 [&_table]:text-sm [&_th]:border [&_th]:border-gray-300 [&_th]:px-3 [&_th]:py-2 [&_th]:bg-gray-100 [&_th]:font-bold [&_td]:border [&_td]:border-gray-300 [&_td]:px-3 [&_td]:py-2 [&_p]:my-3 [&_p]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-gray-400 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:bg-gray-100 [&_blockquote]:my-4 [&_mark]:px-1 [&_mark]:py-0.5 [&_mark]:rounded [&_.highlight]:px-1 [&_.highlight]:py-0.5 [&_.highlight]:rounded">
-              <div dangerouslySetInnerHTML={{ __html: content }} />
+              <div dangerouslySetInnerHTML={{ __html: convertMarkdownToPreview(content) }} />
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal Premium */}
+      <Dialog open={showPremiumModal} onOpenChange={setShowPremiumModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Crown className="w-5 h-5 text-yellow-500" />
+              Limite atteinte !
+            </DialogTitle>
+            <DialogDescription>
+              Vous avez atteint la limite de 500 caractères pour les comptes gratuits.
+              Passez au Premium pour un accès illimité.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col gap-3 sm:flex-col">
+            <Button asChild className="w-full bg-red-600 hover:bg-red-700">
+              <Link href="/pricing">
+                <Crown className="w-4 h-4 mr-2" />
+                PASSER AU PREMIUM - 5€
+              </Link>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => setShowPremiumModal(false)}
+            >
+              Continuer en gratuit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

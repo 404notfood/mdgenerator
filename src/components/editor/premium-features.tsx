@@ -26,6 +26,7 @@ import {
   // X,
   Plus
 } from 'lucide-react'
+import { BadgeGenerator as ModernBadgeGenerator } from './badge-generator'
 
 // Types pour les badges dynamiques
 export interface DynamicBadge {
