@@ -109,7 +109,7 @@ function EditorContent() {
         {/* Compteur de caractères */}
         <div className="mb-6">
           <div className="flex justify-center items-center gap-4">
-            <Badge variant={isOverLimit ? "destructive" : characterCount > 250 ? "warning" : "default"}>
+            <Badge variant={isOverLimit ? "destructive" : characterCount > 250 ? "secondary" : "default"}>
               {isPremium ? (
                 <div className="flex items-center gap-1">
                   <Crown className="w-3 h-3" />
