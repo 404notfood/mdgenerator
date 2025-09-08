@@ -577,7 +577,7 @@ export function PremiumFeatures({ onInsert }: PremiumFeaturesProps) {
         </Button>
       </div>
 
-      {activeTab === 'badges' && <BadgeGenerator onInsert={onInsert} />}
+      {activeTab === 'badges' && <ModernBadgeGenerator onInsert={onInsert} />}
       {activeTab === 'callouts' && <CalloutGenerator onInsert={onInsert} />}
       {activeTab === 'icons' && <IconPalette onInsert={onInsert} />}
     </div>
