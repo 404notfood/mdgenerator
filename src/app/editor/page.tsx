@@ -7,14 +7,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ExportButtons } from '@/components/editor/export-buttons'
 import { ImageUpload } from '@/components/editor/image-upload'
 import { PremiumFeatures } from '@/components/editor/premium-features'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useSession } from '@/lib/auth-client'
+import Link from 'next/link'
+import { Crown, AlertTriangle } from 'lucide-react'
 
 function EditorContent() {
   const searchParams = useSearchParams()
   const documentId = searchParams.get('id')
+  const { data: session } = useSession()
   
   const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
   const [loading, setLoading] = useState(false)
   const [documentTitle, setDocumentTitle] = useState("")
+  const [showPremiumModal, setShowPremiumModal] = useState(false)
+  
+  // Vérifier si l'utilisateur est premium (a acheté des templates) ou admin
+  const isPremium = (session?.user as any)?.role === 'ADMIN' || false // TODO: vérifier les achats
+  
+  // Calculer le nombre de caractères (texte seulement, sans HTML)
+  const textContent = content.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ')
+  const characterCount = textContent.length
+  const CHARACTER_LIMIT = isPremium ? Infinity : 300
+  const isOverLimit = !isPremium && characterCount > 300
+  const remainingCharacters = isPremium ? Infinity : Math.max(0, 300 - characterCount)
   
   // Load document from ID or template from localStorage
   React.useEffect(() => {
@@ -47,7 +65,27 @@ function EditorContent() {
   }, [documentId])
   
   const handleInsertContent = (newContent: string) => {
+    if (!isPremium) {
+      const newTextLength = (content + '\n\n' + newContent).replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
+      if (newTextLength > 300) {
+        setShowPremiumModal(true)
+        return
+      }
+    }
     setContent(prev => prev + '\n\n' + newContent)
+  }
+  
+  const handleContentChange = (newContent: string) => {
+    if (!isPremium) {
+      const newTextLength = newContent.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
+      if (newTextLength > 300) {
+        // Permettre la suppression mais pas l'ajout
+        if (newTextLength > characterCount) {
+          return
+        }
+      }
+    }
+    setContent(newContent)
   }
   
   if (loading) {
@@ -68,6 +106,50 @@ function EditorContent() {
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
           Créez des README professionnels avec notre éditeur Markdown WYSIWYG et les fonctionnalités premium.
         </p>
+        {/* Compteur de caractères */}
+        <div className="mb-6">
+          <div className="flex justify-center items-center gap-4">
+            <Badge variant={isOverLimit ? "destructive" : characterCount > 250 ? "warning" : "default"}>
+              {isPremium ? (
+                <div className="flex items-center gap-1">
+                  <Crown className="w-3 h-3" />
+                  Illimité
+                </div>
+              ) : (
+                `${characterCount}/${CHARACTER_LIMIT} caractères`
+              )}
+            </Badge>
+            {!isPremium && remainingCharacters < 50 && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/pricing">
+                  <Crown className="w-4 h-4 mr-1" />
+                  Passer au Premium
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Alerte si limite dépassée */}
+        {isOverLimit && (
+          <Alert className="mb-6 max-w-2xl mx-auto bg-red-50 border-red-200">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-700 font-semibold text-center">
+              <div className="text-lg mb-2">Limite de caractères dépassée !</div>
+              <div className="text-sm mb-4">
+                Vous avez dépassé la limite de 300 caractères pour les comptes gratuits.
+                Passez au Premium pour un accès illimité.
+              </div>
+              <Button asChild className="bg-red-600 hover:bg-red-700">
+                <Link href="/pricing">
+                  <Crown className="w-4 h-4 mr-2" />
+                  PASSER AU PREMIUM - 5€
+                </Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex flex-wrap gap-3 justify-center">
           <ExportButtons 
             content={content} 
@@ -93,7 +175,7 @@ function EditorContent() {
           <CardContent>
             <TipTapEditor
               content={content}
-              onChange={setContent}
+              onChange={handleContentChange}
             />
           </CardContent>
         </Card>

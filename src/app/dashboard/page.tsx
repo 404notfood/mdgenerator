@@ -124,6 +124,26 @@ export default function DashboardPage() {
               Nouveau README
             </Link>
           </Button>
+          
+          {/* Bouton temporaire pour devenir admin - À supprimer après */}
+          {((user as any).role !== 'ADMIN') && (
+            <Button 
+              variant="outline" 
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/admin/set-role', { method: 'POST' })
+                  if (response.ok) {
+                    window.location.reload()
+                  }
+                } catch (error) {
+                  console.error('Erreur:', error)
+                }
+              }}
+            >
+              <Crown className="w-4 h-4 mr-2" />
+              Devenir Admin
+            </Button>
+          )}
         </div>
       </div>
 

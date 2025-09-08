@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
+import { marked } from "marked"
 
 export async function POST(request: Request) {
   try {
@@ -44,12 +45,15 @@ export async function POST(request: Request) {
     }
 
     const readmeContent = await response.text()
+    
+    // Convertir le Markdown en HTML pour TipTap
+    const htmlContent = await marked(readmeContent)
 
     // Créer un document avec le contenu du README
     const document = await prisma.document.create({
       data: {
         title: `README - ${repo_full_name}`,
-        content: readmeContent,
+        content: htmlContent, // Stocker en HTML pour TipTap
         userId: session.user.id
       }
     })
