@@ -41,30 +41,31 @@ interface Purchase {
 const demoDocuments: Document[] = [
   {
     id: '1',
-    title: 'Mon Projet React',
-    content: '# Mon Projet React\n\nDescription...',
+    title: 'Mon Super Projet',
+    content: '# Mon Super Projet\n\nUn projet incroyable avec React et Next.js qui permet de faire des choses fantastiques...',
     createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-20')
+    updatedAt: new Date('2025-01-16')
   },
   {
     id: '2', 
-    title: 'API Node.js',
-    content: '# API Node.js\n\nDocumentation API...',
+    title: 'API REST Documentation',
+    content: '# API REST Documentation\n\nDocumentation complète de notre API REST avec authentification JWT...',
     createdAt: new Date('2024-01-10'),
-    updatedAt: new Date('2024-01-18')
+    updatedAt: new Date('2025-01-12')
   }
 ]
 
 const demoPurchases: Purchase[] = [
   {
     id: '1',
-    templateId: '2',
-    templateName: 'Open Source Pro',
-    amount: 990,
-    createdAt: new Date('2024-01-12'),
+    templateId: 'startup-mvp',
+    templateName: 'Startup MVP',
+    amount: 1500,
+    createdAt: new Date('2025-01-08'),
     status: 'SUCCEEDED'
   }
 ]
+
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession()
@@ -94,6 +95,7 @@ export default function DashboardPage() {
   }
 
   const user = session.user
+  const isAdmin = (user as any).role === 'ADMIN'
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -101,7 +103,7 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Dashboard
+            Dashboard {isAdmin && <Badge variant="destructive" className="ml-2">ADMIN</Badge>}
           </h1>
           <p className="text-gray-600">
             Bienvenue, {user.name || user.email}
@@ -109,7 +111,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-2">
           {/* Import GitHub - Premium/Admin seulement */}
-          {((user as any).role === 'ADMIN' || demoPurchases.length > 0) && (
+          {((user as any).role === 'ADMIN' || (user as any).role === 'PREMIUM') && (
             <GitHubImportDialog>
               <Button variant="outline">
                 <Github className="w-4 h-4 mr-2" />
@@ -125,25 +127,7 @@ export default function DashboardPage() {
             </Link>
           </Button>
           
-          {/* Bouton temporaire pour devenir admin - À supprimer après */}
-          {((user as any).role !== 'ADMIN') && (
-            <Button 
-              variant="outline" 
-              onClick={async () => {
-                try {
-                  const response = await fetch('/api/admin/set-role', { method: 'POST' })
-                  if (response.ok) {
-                    window.location.reload()
-                  }
-                } catch (error) {
-                  console.error('Erreur:', error)
-                }
-              }}
-            >
-              <Crown className="w-4 h-4 mr-2" />
-              Devenir Admin
-            </Button>
-          )}
+  
         </div>
       </div>
 
@@ -172,7 +156,7 @@ export default function DashboardPage() {
             <Crown className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{demoPurchases.length}</div>
+            <div className="text-2xl font-bold"></div>
             <p className="text-xs text-muted-foreground">
               Templates achetés
             </p>
@@ -211,6 +195,39 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Admin Section */}
+      {isAdmin && (
+        <div className="mb-8">
+          <Card className="border-red-200 bg-red-50/50">
+            <CardHeader>
+              <CardTitle className="text-red-800 flex items-center gap-2">
+                <Badge variant="destructive">ADMIN</Badge>
+                Panneau d'administration
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Button variant="outline" className="border-red-200" asChild>
+                  <Link href="/admin/templates">
+                    Gérer les templates
+                  </Link>
+                </Button>
+                <Button variant="outline" className="border-red-200" asChild>
+                  <Link href="/admin/settings">
+                    Configuration
+                  </Link>
+                </Button>
+                <Button variant="outline" className="border-red-200" asChild>
+                  <Link href="/admin/analytics">
+                    Statistiques
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Documents */}
