@@ -7,8 +7,8 @@ const demoTemplates = [
     name: "Projet Web Basique",
     description: "Template simple pour un projet web avec HTML, CSS et JavaScript",
     category: "WEB" as const,
-    price: 0,
-    isPremium: false,
+    price: 500, // 5€
+    isPremium: true,
     content: `# Mon Projet Web
 
 Une description courte de votre projet web.
@@ -41,7 +41,7 @@ MIT`,
     name: "API REST Professionnelle",
     description: "Template complet pour documenter une API REST avec exemples",
     category: "API" as const,
-    price: 500, // 5€
+    price: 1200, // 12€
     isPremium: true,
     content: `# 🚀 API REST Professionnelle
 
@@ -122,7 +122,7 @@ MIT © [Votre Nom]`,
     name: "Startup MVP",
     description: "Template attractif pour présenter votre startup et MVP",
     category: "STARTUP" as const,
-    price: 500, // 5€
+    price: 1500, // 15€
     isPremium: true,
     content: `# 💡 Startup Name
 
@@ -190,8 +190,8 @@ Nous recherchons des investisseurs pour notre **Série A de 2M€**.
     name: "Open Source Standard",
     description: "Template classique pour projets open source avec toutes les sections essentielles",
     category: "OPEN_SOURCE" as const,
-    price: 0,
-    isPremium: false,
+    price: 700, // 7€
+    isPremium: true,
     content: `# Nom du Projet
 
 Description courte de votre projet open source.
