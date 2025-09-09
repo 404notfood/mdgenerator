@@ -28,6 +28,13 @@ interface Repository {
   readme_sha?: string
 }
 
+interface MarkdownFile {
+  name: string
+  path: string
+  size: number
+  type: 'file' | 'dir'
+}
+
 interface GitHubImportDialogProps {
   children: React.ReactNode
 }
@@ -36,8 +43,11 @@ export function GitHubImportDialog({ children }: GitHubImportDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [filteredRepos, setFilteredRepos] = useState<Repository[]>([])
+  const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null)
+  const [markdownFiles, setMarkdownFiles] = useState<MarkdownFile[]>([])
   const [loading, setLoading] = useState(false)
-  const [importing, setImporting] = useState<number | null>(null)
+  const [loadingFiles, setLoadingFiles] = useState(false)
+  const [importing, setImporting] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
 
@@ -59,8 +69,28 @@ export function GitHubImportDialog({ children }: GitHubImportDialogProps) {
     }
   }
 
-  const importReadme = async (repo: Repository) => {
-    setImporting(repo.id)
+  const fetchMarkdownFiles = async (repo: Repository) => {
+    setLoadingFiles(true)
+    setSelectedRepo(repo)
+    try {
+      const response = await fetch(`/api/github/files?repo=${encodeURIComponent(repo.full_name)}`)
+      if (response.ok) {
+        const files = await response.json()
+        setMarkdownFiles(files)
+      } else {
+        console.error("Erreur lors de la récupération des fichiers")
+      }
+    } catch (error) {
+      console.error("Erreur:", error)
+    } finally {
+      setLoadingFiles(false)
+    }
+  }
+
+  const importMarkdownFile = async (filePath: string) => {
+    if (!selectedRepo) return
+    
+    setImporting(filePath)
     try {
       const response = await fetch("/api/github/readme", {
         method: "POST",
@@ -68,7 +98,8 @@ export function GitHubImportDialog({ children }: GitHubImportDialogProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          repo_full_name: repo.full_name
+          repo_full_name: selectedRepo.full_name,
+          file_path: filePath
         })
       })
 
@@ -84,6 +115,11 @@ export function GitHubImportDialog({ children }: GitHubImportDialogProps) {
     } finally {
       setImporting(null)
     }
+  }
+
+  const goBackToRepos = () => {
+    setSelectedRepo(null)
+    setMarkdownFiles([])
   }
 
   useEffect(() => {
