@@ -150,94 +150,154 @@ export function GitHubImportDialog({ children }: GitHubImportDialogProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Github className="w-5 h-5" />
-            Importer un README depuis GitHub
+            {selectedRepo ? `Fichiers Markdown - ${selectedRepo.name}` : 'Importer depuis GitHub'}
           </DialogTitle>
           <DialogDescription>
-            Sélectionnez un repository pour importer son README dans l'éditeur.
+            {selectedRepo 
+              ? 'Choisissez un fichier Markdown à importer dans l\'éditeur'
+              : 'Sélectionnez un repository puis un fichier Markdown à importer'
+            }
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Barre de recherche */}
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Rechercher un repository..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          {!selectedRepo ? (
+            <>
+              {/* Barre de recherche */}
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Rechercher un repository..."
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
 
-          {/* Liste des repositories */}
-          <div className="max-h-96 overflow-y-auto space-y-2">
-            {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-2 text-gray-600">Chargement des repositories...</p>
-              </div>
-            ) : filteredRepos.length === 0 ? (
-              <div className="text-center py-8">
-                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-2" />
-                <p className="text-gray-600">
-                  {repositories.length === 0 
-                    ? "Aucun repository avec README trouvé" 
-                    : "Aucun repository ne correspond à votre recherche"
-                  }
-                </p>
-              </div>
-            ) : (
-              filteredRepos.map((repo) => (
-                <Card key={repo.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-sm truncate">
-                            {repo.name}
-                          </h3>
-                          <div className="flex items-center gap-1">
-                            {repo.private ? (
-                              <Lock className="w-3 h-3 text-gray-400" />
-                            ) : (
-                              <Globe className="w-3 h-3 text-gray-400" />
-                            )}
-                            <Badge variant="secondary" className="text-xs">
-                              {repo.private ? "Privé" : "Public"}
-                            </Badge>
+              {/* Liste des repositories */}
+              <div className="max-h-96 overflow-y-auto space-y-2">
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-2 text-gray-600">Chargement des repositories...</p>
+                  </div>
+                ) : filteredRepos.length === 0 ? (
+                  <div className="text-center py-8">
+                    <FileText className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                    <p className="text-gray-600">
+                      {repositories.length === 0 
+                        ? "Aucun repository trouvé" 
+                        : "Aucun repository ne correspond à votre recherche"
+                      }
+                    </p>
+                  </div>
+                ) : (
+                  filteredRepos.map((repo) => (
+                    <Card key={repo.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold text-sm truncate">
+                                {repo.name}
+                              </h3>
+                              <div className="flex items-center gap-1">
+                                {repo.private ? (
+                                  <Lock className="w-3 h-3 text-gray-400" />
+                                ) : (
+                                  <Globe className="w-3 h-3 text-gray-400" />
+                                )}
+                                <Badge variant="secondary" className="text-xs">
+                                  {repo.private ? "Privé" : "Public"}
+                                </Badge>
+                              </div>
+                            </div>
+                            
+                            <p className="text-gray-600 text-xs mb-2 line-clamp-2">
+                              {repo.description || "Pas de description"}
+                            </p>
+                            
+                            <p className="text-gray-400 text-xs">
+                              Mis à jour le {new Date(repo.updated_at).toLocaleDateString('fr-FR')}
+                            </p>
                           </div>
+                          
+                          <Button
+                            size="sm"
+                            onClick={() => fetchMarkdownFiles(repo)}
+                            disabled={loadingFiles}
+                            className="ml-4 flex-shrink-0"
+                          >
+                            Parcourir
+                          </Button>
                         </div>
-                        
-                        <p className="text-gray-600 text-xs mb-2 line-clamp-2">
-                          {repo.description || "Pas de description"}
-                        </p>
-                        
-                        <p className="text-gray-400 text-xs">
-                          Mis à jour le {new Date(repo.updated_at).toLocaleDateString('fr-FR')}
-                        </p>
-                      </div>
-                      
-                      <Button
-                        size="sm"
-                        onClick={() => importReadme(repo)}
-                        disabled={importing !== null}
-                        className="ml-4 flex-shrink-0"
-                      >
-                        {importing === repo.id ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        ) : (
-                          <>
-                            <Download className="w-4 h-4 mr-1" />
-                            Importer
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Navigation retour */}
+              <div className="flex items-center gap-2 pb-2 border-b">
+                <Button variant="ghost" size="sm" onClick={goBackToRepos}>
+                  ← Retour aux repositories
+                </Button>
+              </div>
+
+              {/* Liste des fichiers Markdown */}
+              <div className="max-h-96 overflow-y-auto space-y-2">
+                {loadingFiles ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-2 text-gray-600">Chargement des fichiers...</p>
+                  </div>
+                ) : markdownFiles.length === 0 ? (
+                  <div className="text-center py-8">
+                    <FileText className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                    <p className="text-gray-600">
+                      Aucun fichier Markdown trouvé dans ce repository
+                    </p>
+                  </div>
+                ) : (
+                  markdownFiles.map((file) => (
+                    <Card key={file.path} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <FileText className="w-4 h-4 text-blue-600" />
+                            <div>
+                              <h3 className="font-medium text-sm">{file.name}</h3>
+                              <p className="text-xs text-gray-500">{file.path}</p>
+                              <p className="text-xs text-gray-400">
+                                {(file.size / 1024).toFixed(1)} KB
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <Button
+                            size="sm"
+                            onClick={() => importMarkdownFile(file.path)}
+                            disabled={importing !== null}
+                          >
+                            {importing === file.path ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            ) : (
+                              <>
+                                <Download className="w-4 h-4 mr-1" />
+                                Importer
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         <DialogFooter>

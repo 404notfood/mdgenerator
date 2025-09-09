@@ -42,7 +42,7 @@ const plans = [
     ],
     notIncluded: [],
     cta: "Acheter Premium",
-    href: "/premium-demo",
+    href: "/buy-premium",
     popular: true
   }
 ]

@@ -25,6 +25,9 @@ export async function POST(request: Request) {
     const purchase = await prisma.purchase.findUnique({
       where: {
         revolutOrderId: order_id
+      },
+      include: {
+        user: true
       }
     })
 
@@ -55,6 +58,15 @@ export async function POST(request: Request) {
       where: { id: purchase.id },
       data: { status: newStatus }
     })
+
+    // Si c'est un upgrade premium réussi, mettre à jour le rôle de l'utilisateur
+    if (newStatus === 'SUCCEEDED' && purchase.templateId === 'premium-upgrade') {
+      await prisma.user.update({
+        where: { id: purchase.userId },
+        data: { role: 'PREMIUM' }
+      })
+      console.log(`Utilisateur ${purchase.userId} mis à jour vers PREMIUM`)
+    }
 
     console.log(`Paiement ${order_id} mis à jour: ${newStatus}`)
 

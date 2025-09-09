@@ -37,8 +37,8 @@ export default function PricingPage() {
             Tarification simple
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Commencez gratuitement et débloquez toutes les fonctionnalités avec un seul achat de 5€. 
-            Aucun abonnement, aucun frais récurrent.
+            Commencez gratuitement et débloquez toutes les fonctionnalités premium avec un achat unique de 5€. 
+            Pas d'abonnement, pas de frais récurrents !
           </p>
         </div>
       </div>
@@ -61,52 +61,44 @@ export default function PricingPage() {
                 <tr className="border-b">
                   <th className="text-left py-4 px-6 font-semibold">Fonctionnalités</th>
                   <th className="text-center py-4 px-6 font-semibold">Gratuit</th>
-                  <th className="text-center py-4 px-6 font-semibold">Pro</th>
-                  <th className="text-center py-4 px-6 font-semibold">Entreprise</th>
+                  <th className="text-center py-4 px-6 font-semibold">Premium</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="py-4 px-6">Templates de base</td>
-                  <td className="text-center py-4 px-6">3</td>
-                  <td className="text-center py-4 px-6">50+</td>
-                  <td className="text-center py-4 px-6">50+ + Personnalisés</td>
+                  <td className="py-4 px-6">Limite de caractères dans l'éditeur</td>
+                  <td className="text-center py-4 px-6">10 000</td>
+                  <td className="text-center py-4 px-6">100 000</td>
                 </tr>
                 <tr className="bg-gray-50">
+                  <td className="py-4 px-6">Templates premium</td>
+                  <td className="text-center py-4 px-6">-</td>
+                  <td className="text-center py-4 px-6">Tous les templates</td>
+                </tr>
+                <tr>
                   <td className="py-4 px-6">Export Markdown</td>
                   <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
                   <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                  <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
                 </tr>
-                <tr>
+                <tr className="bg-gray-50">
                   <td className="py-4 px-6">Export HTML stylé</td>
                   <td className="text-center py-4 px-6">-</td>
                   <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                  <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
                 </tr>
-                <tr className="bg-gray-50">
+                <tr>
                   <td className="py-4 px-6">Intégration GitHub</td>
                   <td className="text-center py-4 px-6">-</td>
                   <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                  <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6">Badges dynamiques</td>
-                  <td className="text-center py-4 px-6">-</td>
-                  <td className="text-center py-4 px-6">Illimités</td>
-                  <td className="text-center py-4 px-6">Illimités</td>
                 </tr>
                 <tr className="bg-gray-50">
-                  <td className="py-4 px-6">Upload d&apos;images</td>
-                  <td className="text-center py-4 px-6">-</td>
-                  <td className="text-center py-4 px-6">100MB</td>
-                  <td className="text-center py-4 px-6">1GB</td>
+                  <td className="py-4 px-6">Badges avancés et callouts</td>
+                  <td className="text-center py-4 px-6">Limités</td>
+                  <td className="text-center py-4 px-6">Illimités</td>
                 </tr>
                 <tr>
-                  <td className="py-4 px-6">Support</td>
-                  <td className="text-center py-4 px-6">Communauté</td>
-                  <td className="text-center py-4 px-6">Prioritaire</td>
-                  <td className="text-center py-4 px-6">Dédié</td>
+                  <td className="py-4 px-6">Support prioritaire</td>
+                  <td className="text-center py-4 px-6">-</td>
+                  <td className="text-center py-4 px-6"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
                 </tr>
               </tbody>
             </table>
