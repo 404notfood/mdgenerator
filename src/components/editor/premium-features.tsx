@@ -7,14 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePermissions } from '@/hooks/use-permissions'
-import { 
-  Star, 
-  Shield, 
-  Award, 
-  Code, 
-  Download, 
-  Users, 
-  Zap, 
+import {
+  Star,
+  Shield,
+  Award,
+  Code,
+  Download,
+  Users,
+  Zap,
   Heart,
   GitBranch,
   Package,
@@ -24,9 +24,12 @@ import {
   Info,
   CheckCircle,
   // X,
-  Plus
+  Plus,
+  BarChart3,
+  Activity
 } from 'lucide-react'
 import { BadgeGenerator as ModernBadgeGenerator } from './badge-generator'
+import { GitHubWidgetSelector } from '@/components/widgets/github-widgets'
 
 // Types pour les badges dynamiques
 export interface DynamicBadge {
@@ -544,11 +547,20 @@ interface PremiumFeaturesProps {
 }
 
 export function PremiumFeatures({ onInsert }: PremiumFeaturesProps) {
-  const [activeTab, setActiveTab] = useState<'badges' | 'callouts' | 'icons'>('badges')
+  const [activeTab, setActiveTab] = useState<'widgets' | 'badges' | 'callouts' | 'icons'>('widgets')
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+      <div className="flex flex-wrap gap-2 p-1 bg-gray-100 rounded-lg">
+        <Button
+          variant={activeTab === 'widgets' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setActiveTab('widgets')}
+          className="flex-1"
+        >
+          <Activity className="w-4 h-4 mr-2" />
+          Widgets
+        </Button>
         <Button
           variant={activeTab === 'badges' ? 'default' : 'ghost'}
           size="sm"
@@ -578,6 +590,22 @@ export function PremiumFeatures({ onInsert }: PremiumFeaturesProps) {
         </Button>
       </div>
 
+      {activeTab === 'widgets' && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-teal-500" />
+              Widgets GitHub
+            </CardTitle>
+            <CardDescription>
+              Ajoutez des statistiques et graphiques GitHub à votre README
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <GitHubWidgetSelector onInsert={onInsert} />
+          </CardContent>
+        </Card>
+      )}
       {activeTab === 'badges' && <ModernBadgeGenerator onInsert={onInsert} />}
       {activeTab === 'callouts' && <CalloutGenerator onInsert={onInsert} />}
       {activeTab === 'icons' && <IconPalette onInsert={onInsert} />}

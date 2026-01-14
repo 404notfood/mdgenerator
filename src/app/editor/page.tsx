@@ -3,6 +3,7 @@
 import React, { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { TipTapEditor } from '@/components/editor/tiptap-editor'
+import { PrismaNavbar } from '@/components/layout/prisma-navbar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExportButtons } from '@/components/editor/export-buttons'
 import { ImageUpload } from '@/components/editor/image-upload'
@@ -13,38 +14,43 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useSession } from '@/lib/auth-client'
 import Link from 'next/link'
-import { Crown, AlertTriangle, X } from 'lucide-react'
+import {
+  Crown,
+  AlertTriangle,
+  Sparkles,
+  Code2,
+  Eye,
+  FileText,
+  Activity,
+  Zap,
+  Download
+} from 'lucide-react'
 
 function EditorContent() {
   const searchParams = useSearchParams()
   const documentId = searchParams.get('id')
   const { data: session } = useSession()
-  
+
   const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
   const [loading, setLoading] = useState(false)
   const [documentTitle, setDocumentTitle] = useState("")
   const [showPremiumModal, setShowPremiumModal] = useState(false)
-  
-  // Vérifier si l'utilisateur est premium (a acheté des templates) ou admin
-  const isPremium = (session?.user as any)?.role === 'ADMIN' || false // TODO: vérifier les achats
-  
-  // Fonction pour convertir les markdown badges en HTML pour l'aperçu
+
+  const isPremium = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'PREMIUM' || false
+
   const convertMarkdownToPreview = (content: string) => {
-    // Convertir les badges markdown en images HTML
     return content.replace(
       /!\[([^\]]*)\]\((https:\/\/img\.shields\.io[^)]+)\)/g,
       '<img src="$2" alt="$1" style="display: inline-block; margin: 2px;" />'
     )
   }
-  
-  // Calculer le nombre de caractères (texte seulement, sans HTML)
+
   const textContent = content.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ')
   const characterCount = textContent.length
   const CHARACTER_LIMIT = isPremium ? Infinity : 500
   const isOverLimit = !isPremium && characterCount > 500
   const remainingCharacters = isPremium ? Infinity : Math.max(0, 500 - characterCount)
-  
-  // Load document from ID or template from localStorage
+
   React.useEffect(() => {
     const loadContent = async () => {
       if (documentId) {
@@ -62,18 +68,17 @@ function EditorContent() {
           setLoading(false)
         }
       } else {
-        // Load template from localStorage if available
         const selectedTemplate = localStorage.getItem('selectedTemplate')
         if (selectedTemplate) {
           setContent(selectedTemplate)
-          localStorage.removeItem('selectedTemplate') // Clean up
+          localStorage.removeItem('selectedTemplate')
         }
       }
     }
-    
+
     loadContent()
   }, [documentId])
-  
+
   const handleInsertContent = (newContent: string) => {
     if (!isPremium) {
       const newTextLength = (content + '\n\n' + newContent).replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
@@ -84,14 +89,12 @@ function EditorContent() {
     }
     setContent(prev => prev + '\n\n' + newContent)
   }
-  
+
   const handleContentChange = (newContent: string) => {
     if (!isPremium) {
       const newTextLength = newContent.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').length
       if (newTextLength > 500) {
-        // Permettre la suppression mais pas l'ajout
         if (newTextLength > characterCount) {
-          // Afficher la popup premium et empêcher la modification
           setShowPremiumModal(true)
           return
         }
@@ -99,178 +102,199 @@ function EditorContent() {
     }
     setContent(newContent)
   }
-  
+
   if (loading) {
     return (
-      <div className="container mx-auto py-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Chargement du document...</p>
+      <div className="min-h-screen bg-[var(--color-bg-dark)]">
+        <PrismaNavbar />
+        <div className="container-custom py-32 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-teal-400 via-cyan-400 to-blue-500 flex items-center justify-center animate-pulse">
+            <Code2 className="w-8 h-8 text-[var(--color-bg-dark)]" />
+          </div>
+          <p className="text-[var(--color-text-secondary)] text-lg">Chargement du document...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {documentTitle || "Éditeur README"}
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-          Créez des README professionnels avec notre éditeur Markdown WYSIWYG et les fonctionnalités premium.
-        </p>
-        {/* Compteur de caractères */}
-        <div className="mb-6">
-          <div className="flex justify-center items-center gap-4">
-            <Badge variant={isOverLimit ? "destructive" : characterCount > 400 ? "secondary" : "default"}>
+    <div className="min-h-screen bg-[var(--color-bg-dark)]">
+      <PrismaNavbar />
+
+      <div className="container-custom py-8 pt-24">
+        {/* Header Section */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-teal-400 via-cyan-400 to-blue-500 shadow-lg glow-teal">
+              <Code2 className="w-6 h-6 text-[var(--color-bg-dark)]" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)]">
+              {documentTitle || "Éditeur README"}
+            </h1>
+          </div>
+          <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-6">
+            Créez des README professionnels avec notre éditeur Markdown WYSIWYG et les widgets GitHub.
+          </p>
+
+          {/* Character Counter */}
+          <div className="flex justify-center items-center gap-4 mb-6">
+            <div className={`badge-floating ${isOverLimit ? 'border-red-500/50 bg-red-500/10 text-red-400' : ''}`}>
               {isPremium ? (
-                <div className="flex items-center gap-1">
-                  <Crown className="w-3 h-3" />
-                  Illimité
+                <div className="flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-yellow-500" />
+                  <span>Caractères illimités</span>
                 </div>
               ) : (
-                `${characterCount}/${CHARACTER_LIMIT} caractères`
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4" />
+                  <span>{characterCount}/{CHARACTER_LIMIT} caractères</span>
+                </div>
               )}
-            </Badge>
-            {!isPremium && remainingCharacters < 50 && (
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/pricing">
-                  <Crown className="w-4 h-4 mr-1" />
-                  Passer au Premium
-                </Link>
-              </Button>
+            </div>
+            {!isPremium && remainingCharacters < 100 && (
+              <Link href="/pricing" className="btn-primary text-sm py-2 px-4">
+                <Crown className="w-4 h-4 mr-2" />
+                Passer au Premium
+              </Link>
             )}
+          </div>
+
+          {/* Over Limit Alert */}
+          {isOverLimit && (
+            <div className="mb-8 max-w-2xl mx-auto p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="text-left">
+                  <p className="font-semibold text-red-400 mb-1">Limite de caractères dépassée !</p>
+                  <p className="text-sm text-red-400/80 mb-3">
+                    Vous avez dépassé la limite de 500 caractères. Passez au Premium pour un accès illimité.
+                  </p>
+                  <Link href="/pricing" className="btn-primary text-sm py-2 px-4 inline-flex">
+                    <Crown className="w-4 h-4 mr-2" />
+                    PASSER AU PREMIUM - 5
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            <ExportButtons
+              content={content}
+              htmlContent={content}
+            />
+            <ImageUpload
+              onImageUploaded={(markdownImage) => {
+                handleInsertContent(markdownImage)
+              }}
+            />
           </div>
         </div>
 
-        {/* Alerte si limite dépassée */}
-        {isOverLimit && (
-          <Alert className="mb-6 max-w-2xl mx-auto bg-red-50 border-red-200">
-            <AlertTriangle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-700 font-semibold text-center">
-              <div className="text-lg mb-2">Limite de caractères dépassée !</div>
-              <div className="text-sm mb-4">
-                Vous avez dépassé la limite de 500 caractères pour les comptes gratuits.
-                Passez au Premium pour un accès illimité.
+        {/* Main Editor Grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Editor Card */}
+          <div className="lg:col-span-2 card-bento">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="feature-icon">
+                <FileText className="w-5 h-5" />
               </div>
-              <Button asChild className="bg-red-600 hover:bg-red-700">
-                <Link href="/pricing">
-                  <Crown className="w-4 h-4 mr-2" />
-                  PASSER AU PREMIUM - 5€
-                </Link>
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="flex flex-wrap gap-3 justify-center">
-          <ExportButtons 
-            content={content} 
-            htmlContent={content}
-          />
-          <ImageUpload 
-            onImageUploaded={(markdownImage) => {
-              handleInsertContent(markdownImage)
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Editor */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Éditeur Markdown</CardTitle>
-            <CardDescription>
-              Commencez à écrire votre README avec notre éditeur intuitif
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Éditeur Markdown</h2>
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Commencez à écrire votre README avec notre éditeur intuitif
+                </p>
+              </div>
+            </div>
             <TipTapEditor
               content={content}
               onChange={handleContentChange}
             />
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Premium Features Sidebar */}
-        <div className="space-y-6">
-          {isPremium ? (
-            <PremiumFeatures onInsert={handleInsertContent} />
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-yellow-500" />
-                  Fonctionnalités Premium
-                </CardTitle>
-                <CardDescription>
-                  Débloquez badges, callouts et icônes avec Premium
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <div className="text-gray-600 text-sm">
-                  ✨ Badges professionnels<br/>
-                  💬 Callouts avancés<br/>
-                  🎨 Palette d'icônes<br/>
-                  📤 Export GitHub<br/>
-                  ♾️ Caractères illimités
+          {/* Sidebar - Premium Features */}
+          <div className="space-y-6">
+            {isPremium ? (
+              <PremiumFeatures onInsert={handleInsertContent} />
+            ) : (
+              <div className="card-bento border-yellow-500/30 bg-gradient-to-br from-[var(--color-surface-dark)] to-yellow-500/5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center">
+                    <Crown className="w-6 h-6 text-[var(--color-bg-dark)]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-text-primary)]">
+                      Fonctionnalités Premium
+                    </h3>
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      Débloquez widgets, badges et plus
+                    </p>
+                  </div>
                 </div>
-                <Button asChild className="w-full">
-                  <Link href="/pricing">
-                    <Crown className="w-4 h-4 mr-2" />
-                    Passer au Premium - 5€
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+
+                <div className="space-y-3 mb-6">
+                  <PremiumFeatureItem icon={<Activity className="w-4 h-4" />} text="Widgets GitHub (stats, langues, streak)" />
+                  <PremiumFeatureItem icon={<Sparkles className="w-4 h-4" />} text="Badges professionnels" />
+                  <PremiumFeatureItem icon={<Zap className="w-4 h-4" />} text="Callouts GitHub avancés" />
+                  <PremiumFeatureItem icon={<Download className="w-4 h-4" />} text="Export GitHub direct" />
+                  <PremiumFeatureItem icon={<Crown className="w-4 h-4" />} text="Caractères illimités" />
+                </div>
+
+                <Link href="/pricing" className="block w-full btn-primary text-center bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400">
+                  <Crown className="w-4 h-4 mr-2" />
+                  Passer au Premium - 5
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Preview Section */}
+        <div className="mt-10">
+          <div className="card-bento">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="feature-icon bg-gradient-to-br from-purple-500 to-pink-500">
+                <Eye className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Aperçu</h2>
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Voici comment votre README apparaîtra sur GitHub
+                </p>
+              </div>
+            </div>
+            <div className="bg-[var(--color-bg-darker)] p-8 rounded-xl border border-[var(--color-border-dark)] min-h-[300px] prose prose-invert prose-lg max-w-none">
+              <div dangerouslySetInnerHTML={{ __html: convertMarkdownToPreview(content) }} />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Preview - Full Width Below */}
-      <div className="mt-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Aperçu</CardTitle>
-            <CardDescription>
-              Voici comment votre README apparaîtra
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gray-50 p-4 rounded-lg min-h-[300px] border prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:my-8 [&_h1]:text-gray-800 [&_h1]:border-b-2 [&_h1]:border-gray-200 [&_h1]:pb-2 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:my-6 [&_h2]:text-gray-700 [&_h2]:border-b [&_h2]:border-gray-200 [&_h2]:pb-1 [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:my-5 [&_h3]:text-gray-600 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:ml-4 [&_li]:mb-1 [&_img]:rounded-lg [&_img]:max-w-full [&_img]:h-auto [&_img]:cursor-pointer [&_hr]:border-0 [&_hr]:border-t-2 [&_hr]:border-gray-300 [&_hr]:my-8 [&_table]:border-collapse [&_table]:w-full [&_table]:my-4 [&_table]:text-sm [&_th]:border [&_th]:border-gray-300 [&_th]:px-3 [&_th]:py-2 [&_th]:bg-gray-100 [&_th]:font-bold [&_td]:border [&_td]:border-gray-300 [&_td]:px-3 [&_td]:py-2 [&_p]:my-3 [&_p]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-gray-400 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:bg-gray-100 [&_blockquote]:my-4 [&_mark]:px-1 [&_mark]:py-0.5 [&_mark]:rounded [&_.highlight]:px-1 [&_.highlight]:py-0.5 [&_.highlight]:rounded">
-              <div dangerouslySetInnerHTML={{ __html: convertMarkdownToPreview(content) }} />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Modal Premium */}
+      {/* Premium Modal */}
       <Dialog open={showPremiumModal} onOpenChange={setShowPremiumModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Crown className="w-5 h-5 text-yellow-500" />
+            <DialogTitle className="flex items-center gap-2 text-2xl text-[var(--color-text-primary)]">
+              <Crown className="w-6 h-6 text-yellow-500" />
               Limite atteinte !
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-base pt-2 text-[var(--color-text-secondary)]">
               Vous avez atteint la limite de 500 caractères pour les comptes gratuits.
               Passez au Premium pour un accès illimité.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col gap-3 sm:flex-col">
-            <Button asChild className="w-full bg-red-600 hover:bg-red-700">
-              <Link href="/pricing">
-                <Crown className="w-4 h-4 mr-2" />
-                PASSER AU PREMIUM - 5€
-              </Link>
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full"
+            <Link href="/pricing" className="w-full btn-primary text-center bg-gradient-to-r from-yellow-500 to-amber-500">
+              <Crown className="w-4 h-4 mr-2" />
+              PASSER AU PREMIUM - 5
+            </Link>
+            <button
+              className="w-full btn-secondary"
               onClick={() => setShowPremiumModal(false)}
             >
               Continuer en gratuit
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -278,12 +302,25 @@ function EditorContent() {
   )
 }
 
+function PremiumFeatureItem({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="flex items-center gap-2 text-[var(--color-text-secondary)]">
+      <span className="text-yellow-500">{icon}</span>
+      <span className="text-sm">{text}</span>
+    </div>
+  )
+}
+
 export default function EditorPage() {
   return (
     <Suspense fallback={
-      <div className="container mx-auto py-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Chargement...</p>
+      <div className="min-h-screen bg-[var(--color-bg-dark)] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-teal-400 via-cyan-400 to-blue-500 flex items-center justify-center animate-pulse">
+            <Code2 className="w-8 h-8 text-[var(--color-bg-dark)]" />
+          </div>
+          <p className="text-[var(--color-text-secondary)] text-lg">Chargement...</p>
+        </div>
       </div>
     }>
       <EditorContent />

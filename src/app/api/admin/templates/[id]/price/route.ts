@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({
@@ -27,9 +27,11 @@ export async function PUT(
       return NextResponse.json({ error: "Prix invalide" }, { status: 400 })
     }
 
+    const { id } = await params
+
     // Mettre à jour le prix du template
     const updatedTemplate = await prisma.template.update({
-      where: { id: params.id },
+      where: { id },
       data: { price }
     })
 
