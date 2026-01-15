@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, ChevronDown, Github, ExternalLink } from 'lucide-react'
+import { Menu, X, ChevronDown, Github, ExternalLink, User, LogOut, Crown, LayoutDashboard } from 'lucide-react'
+import { useSession, signOut } from '@/lib/auth-client'
 
 interface NavItem {
   label: string
@@ -18,8 +19,13 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 export function PrismaNavbar() {
+  const { data: session } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+
+  const user = session?.user
+  const isPremium = user && ((user as any).role === 'PREMIUM' || (user as any).role === 'ADMIN')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +34,10 @@ export function PrismaNavbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut({ fetchOptions: { onSuccess: () => window.location.href = '/' } })
+  }
 
   return (
     <>
@@ -65,12 +75,74 @@ export function PrismaNavbar() {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-3">
-              <Link href="/auth/signin" className="btn-ghost">
-                Se connecter
-              </Link>
-              <Link href="/auth/signup" className="btn-primary">
-                Commencer
-              </Link>
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-[var(--color-surface-dark)] transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-[var(--color-bg-dark)] font-bold text-sm">
+                      {user.name?.[0] || user.email?.[0] || 'U'}
+                    </div>
+                    <span className="text-[var(--color-text-primary)] font-medium max-w-[120px] truncate">
+                      {user.name || 'Utilisateur'}
+                    </span>
+                    {isPremium && <Crown className="w-4 h-4 text-yellow-500" />}
+                    <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 glass rounded-xl p-2 shadow-xl border border-[var(--color-border-dark)]">
+                      <div className="px-3 py-2 border-b border-[var(--color-border-dark)] mb-2">
+                        <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{user.name}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] truncate">{user.email}</p>
+                      </div>
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                      <Link
+                        href="/editor"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <User className="w-4 h-4" />
+                        Éditeur
+                      </Link>
+                      {!isPremium && (
+                        <Link
+                          href="/pricing"
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-yellow-500 hover:bg-yellow-500/10 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <Crown className="w-4 h-4" />
+                          Passer Premium
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Déconnexion
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link href="/auth/signin" className="btn-ghost">
+                    Se connecter
+                  </Link>
+                  <Link href="/auth/signup" className="btn-primary">
+                    Commencer
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -108,20 +180,60 @@ export function PrismaNavbar() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-[var(--color-border-dark)] space-y-2">
-                <Link
-                  href="/auth/signin"
-                  className="block px-4 py-3 text-center rounded-xl border border-[var(--color-border-dark)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-dark)] transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Se connecter
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="block btn-primary w-full text-center"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Commencer
-                </Link>
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-[var(--color-bg-dark)] font-bold">
+                        {user.name?.[0] || user.email?.[0] || 'U'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-[var(--color-text-primary)] truncate">{user.name}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] truncate">{user.email}</p>
+                      </div>
+                      {isPremium && <Crown className="w-5 h-5 text-yellow-500" />}
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <LayoutDashboard className="w-5 h-5" />
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/editor"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      Éditeur
+                    </Link>
+                    <button
+                      onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Déconnexion
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/auth/signin"
+                      className="block px-4 py-3 text-center rounded-xl border border-[var(--color-border-dark)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Se connecter
+                    </Link>
+                    <Link
+                      href="/auth/signup"
+                      className="block btn-primary w-full text-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Commencer
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
