@@ -208,7 +208,7 @@ export default function HomePage() {
 
               <BentoCard
                 icon={<Palette className="w-5 h-5" />}
-                title="100+ Templates"
+                title="Templates Pro"
                 description="Templates professionnels pour tous types de projets : API, startup, open source."
               />
 
@@ -353,7 +353,7 @@ export default function HomePage() {
                 description="Pour les pros"
                 features={[
                   'Documents illimités',
-                  '100+ templates premium',
+                  'Templates premium inclus',
                   'Génération IA illimitée',
                   'Tous les widgets GitHub',
                   'Export multi-formats',

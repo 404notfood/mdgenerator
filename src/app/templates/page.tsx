@@ -5,6 +5,7 @@ import Link from "next/link"
 import { PrismaNavbar } from "@/components/layout/prisma-navbar"
 import { useTemplates, TemplateCategory } from "@/hooks/use-templates"
 import { PurchaseButton } from "@/components/templates/purchase-button"
+import { TemplatePreviewDialog } from "@/components/templates/template-preview-dialog"
 import {
   Eye,
   Sparkles,
@@ -65,7 +66,7 @@ export default function TemplatesPage() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="badge-floating inline-flex mb-6">
               <LayoutTemplate className="w-4 h-4" />
-              <span>100+ Templates</span>
+              <span>Templates README</span>
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold text-[var(--color-text-primary)] mb-6">
@@ -212,36 +213,46 @@ export default function TemplatesPage() {
                       </p>
 
                       {/* Preview */}
-                      <div className="relative rounded-xl overflow-hidden bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] h-36 mb-4 group-hover:border-[var(--color-primary-dark)] transition-colors">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <LayoutTemplate className="w-10 h-10 text-[var(--color-text-muted)] mx-auto mb-2 group-hover:text-[var(--color-primary)] transition-colors" />
-                            <span className="text-xs text-[var(--color-text-muted)]">
-                              Aperçu du template
+                      <TemplatePreviewDialog
+                        templateName={template.name}
+                        content={template.content}
+                      >
+                        <div className="relative rounded-xl overflow-hidden bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] h-36 mb-4 group-hover:border-[var(--color-primary-dark)] transition-colors cursor-pointer">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                              <LayoutTemplate className="w-10 h-10 text-[var(--color-text-muted)] mx-auto mb-2 group-hover:text-[var(--color-primary)] transition-colors" />
+                              <span className="text-xs text-[var(--color-text-muted)]">
+                                Cliquez pour voir l'aperçu
+                              </span>
+                            </div>
+                          </div>
+                          {/* Hover overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-dark)] via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                            <span className="btn-secondary text-sm py-2 px-4">
+                              <Eye className="w-4 h-4" />
+                              Prévisualiser
                             </span>
                           </div>
                         </div>
-                        {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-dark)] via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                          <button className="btn-secondary text-sm py-2 px-4">
-                            <Eye className="w-4 h-4" />
-                            Prévisualiser
-                          </button>
-                        </div>
-                      </div>
+                      </TemplatePreviewDialog>
 
                       {/* Actions */}
                       <div className="flex gap-3">
-                        <button className="btn-secondary flex-1 text-sm py-2">
-                          <Eye className="w-4 h-4" />
-                          Aperçu
-                        </button>
+                        <TemplatePreviewDialog
+                          templateName={template.name}
+                          content={template.content}
+                        >
+                          <button className="btn-secondary flex-1 text-sm py-2">
+                            <Eye className="w-4 h-4" />
+                            Aperçu
+                          </button>
+                        </TemplatePreviewDialog>
                         <PurchaseButton
                           templateId={template.id}
                           templateName={template.name}
+                          templateContent={template.content}
                           price={template.price}
                           isPremium={template.isPremium}
-                          onPurchaseSuccess={() => handleSelectTemplate("")}
                         />
                       </div>
                     </div>

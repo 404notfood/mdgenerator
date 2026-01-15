@@ -182,45 +182,49 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
     onInsert(markdown)
   }
 
+  const selectClass = "w-full p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+
   return (
-    <Card>
+    <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
           <Crown className="w-5 h-5 text-yellow-500" />
           Générateur de badges dynamiques
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[var(--color-text-muted)]">
           Créez des badges personnalisés pour votre README
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="badge-label">Label</Label>
+            <Label htmlFor="badge-label" className="text-[var(--color-text-secondary)]">Label</Label>
             <Input
               id="badge-label"
               value={badge.label}
               onChange={(e) => setBadge({ ...badge, label: e.target.value })}
               placeholder="Build"
+              className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
             />
           </div>
           <div>
-            <Label htmlFor="badge-message">Message</Label>
+            <Label htmlFor="badge-message" className="text-[var(--color-text-secondary)]">Message</Label>
             <Input
               id="badge-message"
               value={badge.message}
               onChange={(e) => setBadge({ ...badge, message: e.target.value })}
               placeholder="Passing"
+              className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="badge-color">Couleur</Label>
+            <Label htmlFor="badge-color" className="text-[var(--color-text-secondary)]">Couleur</Label>
             <select
               id="badge-color"
-              className="w-full p-2 border rounded-md"
+              className={selectClass}
               value={badge.color}
               onChange={(e) => setBadge({ ...badge, color: e.target.value })}
             >
@@ -232,10 +236,10 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
             </select>
           </div>
           <div>
-            <Label htmlFor="badge-style">Style</Label>
+            <Label htmlFor="badge-style" className="text-[var(--color-text-secondary)]">Style</Label>
             <select
               id="badge-style"
-              className="w-full p-2 border rounded-md"
+              className={selectClass}
               value={badge.style}
               onChange={(e) => setBadge({ ...badge, style: e.target.value as DynamicBadge['style'] })}
             >
@@ -250,10 +254,10 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="badge-icon">Icône</Label>
+            <Label htmlFor="badge-icon" className="text-[var(--color-text-secondary)]">Icône</Label>
             <select
               id="badge-icon"
-              className="w-full p-2 border rounded-md"
+              className={selectClass}
               value={badge.icon}
               onChange={(e) => setBadge({ ...badge, icon: e.target.value })}
             >
@@ -266,28 +270,29 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
             </select>
           </div>
           <div>
-            <Label htmlFor="badge-link">Lien (optionnel)</Label>
+            <Label htmlFor="badge-link" className="text-[var(--color-text-secondary)]">Lien (optionnel)</Label>
             <Input
               id="badge-link"
               value={badge.link || ''}
               onChange={(e) => setBadge({ ...badge, link: e.target.value })}
               placeholder="https://github.com/user/repo"
+              className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Aperçu</Label>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <img 
-              src={generateBadgeUrl(badge)} 
+          <Label className="text-[var(--color-text-secondary)]">Aperçu</Label>
+          <div className="p-4 bg-[var(--color-bg-darker)] rounded-xl border border-[var(--color-border-dark)]">
+            <img
+              src={generateBadgeUrl(badge)}
               alt={badge.label}
               className="h-6"
             />
           </div>
         </div>
 
-        <Button onClick={handleInsertBadge} className="w-full">
+        <Button onClick={handleInsertBadge} className="w-full btn-primary">
           <Plus className="w-4 h-4 mr-2" />
           Insérer le badge
         </Button>
@@ -334,24 +339,25 @@ export function CalloutGenerator({ onInsert }: CalloutGeneratorProps) {
 
   const config = calloutConfig[callout.type]
   const Icon = config.icon
+  const selectClass = "w-full p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
 
   return (
-    <Card>
+    <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
           <Crown className="w-5 h-5 text-yellow-500" />
           Générateur de callouts
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[var(--color-text-muted)]">
           Ajoutez des callouts colorés pour mettre en valeur l&apos;information
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="callout-type">Type de callout</Label>
+          <Label htmlFor="callout-type" className="text-[var(--color-text-secondary)]">Type de callout</Label>
           <select
             id="callout-type"
-            className="w-full p-2 border rounded-md"
+            className={selectClass}
             value={callout.type}
             onChange={(e) => setCallout({ ...callout, type: e.target.value as CalloutType })}
           >
@@ -364,20 +370,21 @@ export function CalloutGenerator({ onInsert }: CalloutGeneratorProps) {
         </div>
 
         <div>
-          <Label htmlFor="callout-title">Titre personnalisé (optionnel)</Label>
+          <Label htmlFor="callout-title" className="text-[var(--color-text-secondary)]">Titre personnalisé (optionnel)</Label>
           <Input
             id="callout-title"
             value={callout.title}
             onChange={(e) => setCallout({ ...callout, title: e.target.value })}
             placeholder={config.title}
+            className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
           />
         </div>
 
         <div>
-          <Label htmlFor="callout-content">Contenu</Label>
+          <Label htmlFor="callout-content" className="text-[var(--color-text-secondary)]">Contenu</Label>
           <textarea
             id="callout-content"
-            className="w-full p-2 border rounded-md min-h-[80px]"
+            className="w-full p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] text-[var(--color-text-primary)] min-h-[80px] focus:outline-none focus:border-[var(--color-primary)]"
             value={callout.content}
             onChange={(e) => setCallout({ ...callout, content: e.target.value })}
             placeholder="Votre message ici..."
@@ -385,7 +392,7 @@ export function CalloutGenerator({ onInsert }: CalloutGeneratorProps) {
         </div>
 
         <div className="space-y-2">
-          <Label>Aperçu</Label>
+          <Label className="text-[var(--color-text-secondary)]">Aperçu</Label>
           <div className={`p-4 rounded-lg border-l-4 ${config.bgColor} ${config.borderColor}`}>
             <div className="flex items-center gap-2 mb-2">
               <Icon className={`w-4 h-4 ${config.color}`} />
@@ -399,7 +406,7 @@ export function CalloutGenerator({ onInsert }: CalloutGeneratorProps) {
           </div>
         </div>
 
-        <Button onClick={handleInsertCallout} className="w-full">
+        <Button onClick={handleInsertCallout} className="w-full btn-primary">
           <Plus className="w-4 h-4 mr-2" />
           Insérer le callout
         </Button>
@@ -488,23 +495,25 @@ export function IconPalette({ onInsert }: IconPaletteProps) {
     onInsert(markdown)
   }
 
+  const selectClass = "w-full p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+
   return (
-    <Card>
+    <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
           <Crown className="w-5 h-5 text-yellow-500" />
-          Palette d'icônes
+          Palette d&apos;icônes
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[var(--color-text-muted)]">
           Ajoutez des icônes professionnelles à votre README
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="icon-category">Catégorie</Label>
+          <Label htmlFor="icon-category" className="text-[var(--color-text-secondary)]">Catégorie</Label>
           <select
             id="icon-category"
-            className="w-full p-2 border rounded-md"
+            className={selectClass}
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -516,24 +525,24 @@ export function IconPalette({ onInsert }: IconPaletteProps) {
           </select>
         </div>
 
-        <div className="grid grid-cols-4 gap-4 max-h-60 overflow-y-auto">
+        <div className="grid grid-cols-4 gap-3 max-h-60 overflow-y-auto p-1">
           {iconCategories[selectedCategory as keyof typeof iconCategories].icons.map((icon, index) => (
             <button
               key={index}
               onClick={() => handleIconClick(icon)}
-              className="p-3 border rounded-lg hover:bg-gray-50 transition-colors flex flex-col items-center gap-2"
+              className="p-3 border border-[var(--color-border-dark)] rounded-xl bg-[var(--color-bg-darker)] hover:bg-[var(--color-surface-elevated)] hover:border-[var(--color-primary)]/50 transition-all flex flex-col items-center gap-2"
               title={`Insérer ${icon.name}`}
             >
-              <img 
-                src={icon.url} 
-                alt={icon.name} 
+              <img
+                src={icon.url}
+                alt={icon.name}
                 className="w-8 h-8"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.style.display = 'none'
                 }}
               />
-              <span className="text-xs text-center leading-tight">{icon.name}</span>
+              <span className="text-xs text-center leading-tight text-[var(--color-text-secondary)]">{icon.name}</span>
             </button>
           ))}
         </div>
@@ -549,55 +558,51 @@ interface PremiumFeaturesProps {
 export function PremiumFeatures({ onInsert }: PremiumFeaturesProps) {
   const [activeTab, setActiveTab] = useState<'widgets' | 'badges' | 'callouts' | 'icons'>('widgets')
 
+  const tabBtnBase = "flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+  const tabBtnActive = "bg-[var(--color-primary)] text-white shadow-md"
+  const tabBtnInactive = "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)]"
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 p-1 bg-gray-100 rounded-lg">
-        <Button
-          variant={activeTab === 'widgets' ? 'default' : 'ghost'}
-          size="sm"
+      <div className="flex flex-wrap gap-2 p-1.5 bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl">
+        <button
           onClick={() => setActiveTab('widgets')}
-          className="flex-1"
+          className={`${tabBtnBase} ${activeTab === 'widgets' ? tabBtnActive : tabBtnInactive}`}
         >
-          <Activity className="w-4 h-4 mr-2" />
+          <Activity className="w-4 h-4" />
           Widgets
-        </Button>
-        <Button
-          variant={activeTab === 'badges' ? 'default' : 'ghost'}
-          size="sm"
+        </button>
+        <button
           onClick={() => setActiveTab('badges')}
-          className="flex-1"
+          className={`${tabBtnBase} ${activeTab === 'badges' ? tabBtnActive : tabBtnInactive}`}
         >
-          <Shield className="w-4 h-4 mr-2" />
+          <Shield className="w-4 h-4" />
           Badges
-        </Button>
-        <Button
-          variant={activeTab === 'callouts' ? 'default' : 'ghost'}
-          size="sm"
+        </button>
+        <button
           onClick={() => setActiveTab('callouts')}
-          className="flex-1"
+          className={`${tabBtnBase} ${activeTab === 'callouts' ? tabBtnActive : tabBtnInactive}`}
         >
-          <AlertTriangle className="w-4 h-4 mr-2" />
+          <AlertTriangle className="w-4 h-4" />
           Callouts
-        </Button>
-        <Button
-          variant={activeTab === 'icons' ? 'default' : 'ghost'}
-          size="sm"
+        </button>
+        <button
           onClick={() => setActiveTab('icons')}
-          className="flex-1"
+          className={`${tabBtnBase} ${activeTab === 'icons' ? tabBtnActive : tabBtnInactive}`}
         >
-          <Star className="w-4 h-4 mr-2" />
+          <Star className="w-4 h-4" />
           Icônes
-        </Button>
+        </button>
       </div>
 
       {activeTab === 'widgets' && (
-        <Card>
+        <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-teal-500" />
+            <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
+              <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />
               Widgets GitHub
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[var(--color-text-muted)]">
               Ajoutez des statistiques et graphiques GitHub à votre README
             </CardDescription>
           </CardHeader>

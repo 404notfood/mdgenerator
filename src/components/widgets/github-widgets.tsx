@@ -51,34 +51,50 @@ const THEMES = [
   'react'
 ]
 
-// Widget configurations
+// Widget configurations - Using stable services
 const WIDGETS: WidgetConfig[] = [
   {
-    id: 'github-stats',
-    name: 'GitHub Stats',
-    description: 'Affiche vos statistiques GitHub (commits, PRs, issues, stars)',
+    id: 'github-stats-card',
+    name: 'Stats Card',
+    description: 'Carte avec vos stats GitHub (commits, repos, gists)',
     icon: <BarChart3 className="w-5 h-5" />,
     category: 'stats',
-    themes: THEMES,
-    preview: 'https://github-readme-stats.vercel.app/api?username=anuraghazra&show_icons=true&theme=tokyonight',
-    markdown: (username, options = {}) => {
-      const theme = options.theme || 'tokyonight'
-      const showIcons = options.showIcons !== false
-      return `![GitHub Stats](https://github-readme-stats.vercel.app/api?username=${username}&show_icons=${showIcons}&theme=${theme}&include_all_commits=true&count_private=true)`
+    preview: 'https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=vn7n24fzkq&theme=tokyonight',
+    markdown: (username) => {
+      return `![GitHub Stats](https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${username}&theme=tokyonight)`
     }
   },
   {
-    id: 'top-languages',
-    name: 'Top Languages',
-    description: 'Montre vos langages de programmation les plus utilisés',
+    id: 'repos-per-language',
+    name: 'Repos par Langage',
+    description: 'Graphique de vos repos par langage de programmation',
     icon: <Code2 className="w-5 h-5" />,
     category: 'stats',
-    themes: THEMES,
-    preview: 'https://github-readme-stats.vercel.app/api/top-langs/?username=anuraghazra&layout=compact&theme=tokyonight',
-    markdown: (username, options = {}) => {
-      const theme = options.theme || 'tokyonight'
-      const layout = options.layout || 'compact'
-      return `![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=${layout}&theme=${theme}&langs_count=8)`
+    preview: 'https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=vn7n24fzkq&theme=tokyonight',
+    markdown: (username) => {
+      return `![Repos per Language](https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=${username}&theme=tokyonight)`
+    }
+  },
+  {
+    id: 'most-commit-language',
+    name: 'Commits par Langage',
+    description: 'Graphique de vos commits par langage',
+    icon: <Code2 className="w-5 h-5" />,
+    category: 'stats',
+    preview: 'https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=vn7n24fzkq&theme=tokyonight',
+    markdown: (username) => {
+      return `![Most Commit Language](https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${username}&theme=tokyonight)`
+    }
+  },
+  {
+    id: 'productive-time',
+    name: 'Heures Productives',
+    description: 'Graphique de vos heures de commit les plus actives',
+    icon: <Activity className="w-5 h-5" />,
+    category: 'stats',
+    preview: 'https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=vn7n24fzkq&theme=tokyonight&utcOffset=1',
+    markdown: (username) => {
+      return `![Productive Time](https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${username}&theme=tokyonight&utcOffset=1)`
     }
   },
   {
@@ -88,23 +104,21 @@ const WIDGETS: WidgetConfig[] = [
     icon: <Flame className="w-5 h-5" />,
     category: 'activity',
     themes: THEMES,
-    preview: 'https://github-readme-streak-stats.herokuapp.com/?user=denvercoder1&theme=tokyonight',
+    preview: 'https://streak-stats.demolab.com/?user=denvercoder1&theme=tokyonight&hide_border=true',
     markdown: (username, options = {}) => {
       const theme = options.theme || 'tokyonight'
-      return `![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${theme})`
+      return `![GitHub Streak](https://streak-stats.demolab.com/?user=${username}&theme=${theme}&hide_border=true)`
     }
   },
   {
-    id: 'trophy',
-    name: 'GitHub Trophies',
-    description: 'Badges de trophées basés sur votre activité GitHub',
+    id: 'stats-summary',
+    name: 'Stats Summary',
+    description: 'Résumé complet de vos statistiques GitHub',
     icon: <Trophy className="w-5 h-5" />,
     category: 'showcase',
-    themes: ['flat', 'onedark', 'gruvbox', 'dracula', 'monokai', 'nord', 'radical'],
-    preview: 'https://github-profile-trophy.vercel.app/?username=ryo-ma&theme=onedark&row=1&column=6',
-    markdown: (username, options = {}) => {
-      const theme = options.theme || 'onedark'
-      return `![Trophies](https://github-profile-trophy.vercel.app/?username=${username}&theme=${theme}&no-frame=true&row=1&column=7)`
+    preview: 'https://github-profile-summary-cards.vercel.app/api/cards/stats?username=vn7n24fzkq&theme=tokyonight',
+    markdown: (username) => {
+      return `![Stats](https://github-profile-summary-cards.vercel.app/api/cards/stats?username=${username}&theme=tokyonight)`
     }
   },
   {
@@ -113,11 +127,11 @@ const WIDGETS: WidgetConfig[] = [
     description: 'Graphique d\'activité de vos contributions',
     icon: <Activity className="w-5 h-5" />,
     category: 'activity',
-    themes: ['tokyo-night', 'react-dark', 'github-compact', 'xcode', 'coral'],
-    preview: 'https://github-readme-activity-graph.vercel.app/graph?username=ashutosh00710&theme=tokyo-night',
+    themes: ['tokyo-night', 'react-dark', 'github-compact', 'xcode', 'coral', 'github-dark'],
+    preview: 'https://github-readme-activity-graph.vercel.app/graph?username=ashutosh00710&theme=tokyo-night&hide_border=true',
     markdown: (username, options = {}) => {
       const theme = options.theme || 'tokyo-night'
-      return `![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${theme})`
+      return `![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${theme}&hide_border=true)`
     }
   },
   {
@@ -151,6 +165,28 @@ const WIDGETS: WidgetConfig[] = [
     preview: 'https://img.shields.io/github/stars/torvalds?style=for-the-badge&logo=github&color=14b8a6',
     markdown: (username) => {
       return `![Stars](https://img.shields.io/github/stars/${username}?style=for-the-badge&logo=github&color=14b8a6&affiliations=OWNER)`
+    }
+  },
+  {
+    id: 'readme-typing',
+    name: 'Typing SVG',
+    description: 'Animation de texte qui s\'écrit automatiquement',
+    icon: <Code2 className="w-5 h-5" />,
+    category: 'showcase',
+    preview: 'https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=14B8A6&width=435&lines=Hello+World!;Welcome+to+my+profile!',
+    markdown: (username) => {
+      return `![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=14B8A6&center=true&width=435&lines=Hello+I'm+${username}!;Welcome+to+my+profile!)`
+    }
+  },
+  {
+    id: 'capsule-render',
+    name: 'Header/Footer',
+    description: 'Bannière animée pour header ou footer',
+    icon: <GitBranch className="w-5 h-5" />,
+    category: 'showcase',
+    preview: 'https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,19&height=120&section=header&text=&fontSize=0',
+    markdown: (username) => {
+      return `![Header](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,19&height=180&section=header&text=${username}&fontSize=42&fontColor=fff&animation=fadeIn&fontAlignY=35)`
     }
   }
 ]

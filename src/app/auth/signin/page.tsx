@@ -209,7 +209,7 @@ export default function SignInPage() {
           {/* Feature list */}
           <div className="space-y-4 w-full max-w-sm">
             <FeatureItem text="Widgets GitHub intégrés" />
-            <FeatureItem text="100+ templates premium" />
+            <FeatureItem text="Templates premium" />
             <FeatureItem text="Export multi-formats" />
             <FeatureItem text="Génération IA" />
           </div>

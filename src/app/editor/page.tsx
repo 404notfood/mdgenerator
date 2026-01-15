@@ -29,14 +29,16 @@ import {
 function EditorContent() {
   const searchParams = useSearchParams()
   const documentId = searchParams.get('id')
-  const { data: session } = useSession()
+  const { data: session, isPending: sessionLoading } = useSession()
 
   const [content, setContent] = useState("<h1>Mon Super Projet</h1><p>Commencez à écrire votre README ici...</p>")
   const [loading, setLoading] = useState(false)
   const [documentTitle, setDocumentTitle] = useState("")
   const [showPremiumModal, setShowPremiumModal] = useState(false)
 
-  const isPremium = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'PREMIUM' || false
+  const userRole = (session?.user as any)?.role
+  const isPremium = userRole === 'ADMIN' || userRole === 'PREMIUM'
+  const isLoggedIn = !!session?.user
 
   const convertMarkdownToPreview = (content: string) => {
     return content.replace(
@@ -215,8 +217,41 @@ function EditorContent() {
 
           {/* Sidebar - Premium Features */}
           <div className="space-y-6">
-            {isPremium ? (
+            {sessionLoading ? (
+              <div className="card-bento">
+                <div className="flex items-center justify-center py-12">
+                  <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+            ) : isPremium ? (
               <PremiumFeatures onInsert={handleInsertContent} />
+            ) : !isLoggedIn ? (
+              <div className="card-bento border-[var(--color-primary)]/30 bg-gradient-to-br from-[var(--color-surface-dark)] to-[var(--color-primary)]/5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-cyan-500 flex items-center justify-center">
+                    <Crown className="w-6 h-6 text-[var(--color-bg-dark)]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-text-primary)]">
+                      Connectez-vous
+                    </h3>
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      Pour accéder aux fonctionnalités premium
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <PremiumFeatureItem icon={<Activity className="w-4 h-4" />} text="Widgets GitHub (stats, langues, streak)" />
+                  <PremiumFeatureItem icon={<Sparkles className="w-4 h-4" />} text="Badges professionnels" />
+                  <PremiumFeatureItem icon={<Zap className="w-4 h-4" />} text="Callouts GitHub avancés" />
+                  <PremiumFeatureItem icon={<Crown className="w-4 h-4" />} text="Caractères illimités" />
+                </div>
+
+                <Link href="/auth/signin" className="block w-full btn-primary text-center">
+                  Se connecter
+                </Link>
+              </div>
             ) : (
               <div className="card-bento border-yellow-500/30 bg-gradient-to-br from-[var(--color-surface-dark)] to-yellow-500/5">
                 <div className="flex items-center gap-3 mb-4">
@@ -243,7 +278,7 @@ function EditorContent() {
 
                 <Link href="/pricing" className="block w-full btn-primary text-center bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400">
                   <Crown className="w-4 h-4 mr-2" />
-                  Passer au Premium - 5
+                  Passer au Premium - 5€
                 </Link>
               </div>
             )}

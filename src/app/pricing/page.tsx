@@ -50,7 +50,7 @@ const plans = [
       { name: "Tous les templates", included: true },
       { name: "Export multi-formats", included: true },
       { name: "Tous les widgets GitHub", included: true },
-      { name: "100+ templates premium", included: true },
+      { name: "Templates premium inclus", included: true },
       { name: "Génération IA illimitée", included: true },
       { name: "Export HTML/PDF", included: true },
       { name: "Support prioritaire", included: true }

@@ -12,6 +12,7 @@ import Emoji from '@tiptap/extension-emoji'
 import FileHandler from '@tiptap/extension-file-handler'
 import Highlight from '@tiptap/extension-highlight'
 import Color from '@tiptap/extension-color'
+import TextStyle from '@tiptap/extension-text-style'
 import { createLowlight } from 'lowlight'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
@@ -146,6 +147,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         },
       }),
       Emoji,
+      TextStyle,
       FileHandler.configure({
         allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
         onDrop: (currentEditor, files, pos) => {

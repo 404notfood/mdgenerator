@@ -10,6 +10,7 @@ export interface Template {
   description: string
   category: TemplateCategory
   price: number
+  content: string
   thumbnail?: string
   isPremium: boolean
   createdAt: string

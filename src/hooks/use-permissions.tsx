@@ -14,11 +14,16 @@ export type Permission =
   | 'admin:templates'
   | 'payments:create'
 
-export type UserRole = 'USER' | 'ADMIN'
+export type UserRole = 'USER' | 'PREMIUM' | 'ADMIN'
 
 // Définition des permissions par rôle
 const rolePermissions: Record<UserRole, Permission[]> = {
   USER: [
+    'upload:images',
+    'export:html',
+    'payments:create'
+  ],
+  PREMIUM: [
     'upload:images',
     'export:html',
     'templates:premium',
@@ -59,11 +64,18 @@ export function usePermissions() {
 
   const hasRole = (requiredRole: UserRole): boolean => {
     if (!role) return false
-    
+
     // Les admins ont accès à tout
     if (role === 'ADMIN') return true
-    
+
+    // Les premium ont accès à premium et user
+    if (role === 'PREMIUM' && (requiredRole === 'PREMIUM' || requiredRole === 'USER')) return true
+
     return role === requiredRole
+  }
+
+  const isPremium = (): boolean => {
+    return role === 'PREMIUM' || role === 'ADMIN'
   }
 
   const isAuthenticated = (): boolean => {
@@ -104,20 +116,21 @@ export function usePermissions() {
     isAuthenticated: isAuthenticated(),
     role,
     permissions,
-    
+
     // Vérifications génériques
     hasPermission,
     hasRole,
-    
+
     // Vérifications spécifiques
     isAdmin: isAdmin(),
+    isPremium: isPremium(),
     canUploadImages: canUploadImages(),
     canExportHtml: canExportHtml(),
     canAccessPremiumTemplates: canAccessPremiumTemplates(),
     canCreateTemplates: canCreateTemplates(),
     canAccessAdminDashboard: canAccessAdminDashboard(),
     canMakePayments: canMakePayments(),
-    
+
     // Informations utilisateur
     user: session?.user || null
   }

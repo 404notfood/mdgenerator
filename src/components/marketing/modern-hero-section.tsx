@@ -59,7 +59,7 @@ export function ModernHeroSection() {
           {/* Features pills */}
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
             <FeaturePill icon={<Zap className="w-4 h-4" />} text="Génération IA instantanée" />
-            <FeaturePill icon={<Code2 className="w-4 h-4" />} text="100+ Templates premium" />
+            <FeaturePill icon={<Code2 className="w-4 h-4" />} text="Templates premium" />
             <FeaturePill icon={<Sparkles className="w-4 h-4" />} text="Export multi-formats" />
           </div>
 

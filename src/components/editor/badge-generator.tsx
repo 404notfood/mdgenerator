@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Crown, Copy, Plus, Star } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Crown, Copy, Plus, Star, Settings, Code2, Database, Wrench, CheckCircle, ChevronDown } from "lucide-react"
 
 interface PresetBadge {
   id: string
@@ -78,6 +80,24 @@ interface BadgeGeneratorProps {
   onInsert: (badgeMarkdown: string) => void
 }
 
+// Helper function to get category icons
+function getCategoryIcon(category: string) {
+  switch (category) {
+    case 'Languages':
+      return Code2
+    case 'Frameworks':
+      return Star
+    case 'Databases':
+      return Database
+    case 'Tools':
+      return Wrench
+    case 'Status':
+      return CheckCircle
+    default:
+      return Code2
+  }
+}
+
 export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
   const [customLabel, setCustomLabel] = useState("")
   const [customMessage, setCustomMessage] = useState("")
@@ -85,6 +105,12 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
   const [customStyle, setCustomStyle] = useState("flat-square")
   const [customLogo, setCustomLogo] = useState("")
   const [previewBadge, setPreviewBadge] = useState("")
+
+  // Dialog state for customizing preset badges
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedPresetBadge, setSelectedPresetBadge] = useState<PresetBadge | null>(null)
+  const [customVersion, setCustomVersion] = useState("")
+  const [customBadgeStyle, setCustomBadgeStyle] = useState("flat-square")
 
   const generateBadgeUrl = (badge: PresetBadge | any) => {
     const params = new URLSearchParams()
@@ -103,6 +129,28 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
       return `[![${altText}](${badgeUrl})](${link})`
     }
     return `![${altText}](${badgeUrl})`
+  }
+
+  const handleOpenBadgeDialog = (badge: PresetBadge) => {
+    setSelectedPresetBadge(badge)
+    setCustomVersion(badge.message)
+    setCustomBadgeStyle(badge.style)
+    setDialogOpen(true)
+  }
+
+  const handleInsertCustomizedBadge = () => {
+    if (!selectedPresetBadge) return
+
+    const customizedBadge = {
+      ...selectedPresetBadge,
+      message: customVersion || selectedPresetBadge.message,
+      style: customBadgeStyle
+    }
+
+    const markdown = generateBadgeMarkdown(customizedBadge)
+    onInsert(markdown)
+    setDialogOpen(false)
+    setSelectedPresetBadge(null)
   }
 
   const handlePresetBadgeInsert = (badge: PresetBadge) => {
@@ -155,96 +203,133 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
   const categories = [...new Set(PRESET_BADGES.map(badge => badge.category))]
 
   return (
-    <Card>
+    <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
           <Crown className="w-4 h-4 text-yellow-500" />
           Générateur de Badges
-          <Badge variant="secondary" className="text-xs">Premium</Badge>
+          <Badge variant="secondary" className="text-xs bg-[var(--color-primary)]/20 text-[var(--color-primary)]">Premium</Badge>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[var(--color-text-muted)]">
           Ajoutez des badges professionnels à votre README
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="presets">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="presets">Badges prédéfinis</TabsTrigger>
-            <TabsTrigger value="custom">Badge personnalisé</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-[var(--color-bg-darker)] p-1">
+            <TabsTrigger value="presets" className="data-[state=active]:bg-[var(--color-primary)] data-[state=active]:text-white text-[var(--color-text-secondary)]">Badges prédéfinis</TabsTrigger>
+            <TabsTrigger value="custom" className="data-[state=active]:bg-[var(--color-primary)] data-[state=active]:text-white text-[var(--color-text-secondary)]">Badge personnalisé</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="presets" className="space-y-4">
-            {categories.map(category => (
-              <div key={category}>
-                <h4 className="font-semibold mb-2">{category}</h4>
-                <div className="grid grid-cols-1 gap-2">
-                  {PRESET_BADGES
-                    .filter(badge => badge.category === category)
-                    .map(badge => (
-                      <div key={badge.id} className="flex items-center justify-between p-2 rounded border">
-                        <div className="flex items-center gap-3">
-                          <img 
-                            src={generateBadgeUrl(badge)} 
-                            alt={badge.name}
-                            className="h-5"
-                          />
-                          <span className="text-sm font-medium">{badge.name}</span>
+          <TabsContent value="presets" className="mt-4">
+            <Accordion type="single" collapsible defaultValue="Languages" className="space-y-2">
+              {categories.map(category => {
+                const categoryBadges = PRESET_BADGES.filter(badge => badge.category === category)
+                const CategoryIcon = getCategoryIcon(category)
+
+                return (
+                  <AccordionItem
+                    key={category}
+                    value={category}
+                    className="border border-[var(--color-border-dark)] rounded-xl bg-[var(--color-bg-darker)] overflow-hidden"
+                  >
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-[var(--color-surface-elevated)] transition-colors group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center group-hover:bg-[var(--color-primary)]/20 transition-colors">
+                          <CategoryIcon className="w-4 h-4 text-[var(--color-primary)]" />
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handlePresetBadgeInsert(badge)}
-                        >
-                          <Plus className="w-3 h-3" />
-                        </Button>
+                        <span className="font-semibold text-[var(--color-text-primary)]">{category}</span>
+                        <span className="text-xs text-[var(--color-text-muted)] bg-[var(--color-surface-dark)] px-2 py-0.5 rounded-full">
+                          {categoryBadges.length}
+                        </span>
                       </div>
-                    ))}
-                </div>
-              </div>
-            ))}
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3">
+                      <div className="grid grid-cols-1 gap-2 pt-2">
+                        {categoryBadges.map(badge => (
+                          <div key={badge.id} className="flex items-center justify-between p-3 rounded-xl border border-[var(--color-border-dark)] bg-[var(--color-surface-dark)] hover:border-[var(--color-primary)]/30 transition-all group">
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={generateBadgeUrl(badge)}
+                                alt={badge.name}
+                                className="h-5"
+                              />
+                              <span className="text-sm font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] transition-colors">{badge.name}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleOpenBadgeDialog(badge)}
+                                className="h-8 w-8 p-0 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
+                                title="Personnaliser"
+                              >
+                                <Settings className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handlePresetBadgeInsert(badge)}
+                                className="h-8 w-8 p-0 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
+                                title="Insérer directement"
+                              >
+                                <Plus className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
           </TabsContent>
 
-          <TabsContent value="custom" className="space-y-4">
+          <TabsContent value="custom" className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="label">Label</Label>
+                <Label htmlFor="label" className="text-[var(--color-text-secondary)]">Label</Label>
                 <Input
                   id="label"
                   placeholder="ex: PHP"
                   value={customLabel}
                   onChange={(e) => setCustomLabel(e.target.value)}
+                  className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
                 />
               </div>
               <div>
-                <Label htmlFor="message">Message</Label>
+                <Label htmlFor="message" className="text-[var(--color-text-secondary)]">Message</Label>
                 <Input
                   id="message"
                   placeholder="ex: >=8.1"
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
+                  className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="color">Couleur</Label>
+                <Label htmlFor="color" className="text-[var(--color-text-secondary)]">Couleur</Label>
                 <Input
                   id="color"
                   placeholder="ex: blue, #FF5733"
                   value={customColor}
                   onChange={(e) => setCustomColor(e.target.value)}
+                  className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
                 />
               </div>
               <div>
-                <Label htmlFor="style">Style</Label>
+                <Label htmlFor="style" className="text-[var(--color-text-secondary)]">Style</Label>
                 <Select value={customStyle} onValueChange={setCustomStyle}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
                     {BADGE_STYLES.map(style => (
-                      <SelectItem key={style.value} value={style.value}>
+                      <SelectItem key={style.value} value={style.value} className="text-[var(--color-text-primary)] focus:bg-[var(--color-primary)]/20">
                         {style.label}
                       </SelectItem>
                     ))}
@@ -254,16 +339,17 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
             </div>
 
             <div>
-              <Label htmlFor="logo">Logo (optionnel)</Label>
+              <Label htmlFor="logo" className="text-[var(--color-text-secondary)]">Logo (optionnel)</Label>
               <Input
                 id="logo"
                 placeholder="ex: php, react, docker"
                 value={customLogo}
                 onChange={(e) => setCustomLogo(e.target.value)}
+                className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[var(--color-text-muted)] mt-1">
                 Voir les logos disponibles sur{" "}
-                <a href="https://simpleicons.org/" target="_blank" className="text-blue-600 hover:underline">
+                <a href="https://simpleicons.org/" target="_blank" className="text-[var(--color-primary)] hover:underline">
                   SimpleIcons
                 </a>
               </p>
@@ -272,17 +358,17 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
             {/* Aperçu */}
             {previewBadge && (
               <div>
-                <Label>Aperçu</Label>
-                <div className="p-3 bg-gray-50 rounded border">
+                <Label className="text-[var(--color-text-secondary)]">Aperçu</Label>
+                <div className="p-3 bg-[var(--color-bg-darker)] rounded-lg border border-[var(--color-border-dark)]">
                   <img src={previewBadge} alt="Aperçu du badge" className="h-5" />
                 </div>
               </div>
             )}
 
-            <Button 
+            <Button
               onClick={handleCustomBadgeInsert}
               disabled={!customLabel || !customMessage}
-              className="w-full"
+              className="w-full btn-primary"
             >
               <Plus className="w-4 h-4 mr-2" />
               Ajouter le badge
@@ -290,6 +376,91 @@ export function BadgeGenerator({ onInsert }: BadgeGeneratorProps) {
           </TabsContent>
         </Tabs>
       </CardContent>
+
+      {/* Dialog pour personnaliser un badge */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)] max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3 text-[var(--color-text-primary)]">
+              <div className="p-2 rounded-lg bg-[var(--color-primary)]/20">
+                <Settings className="w-5 h-5 text-[var(--color-primary)]" />
+              </div>
+              Personnaliser le badge
+            </DialogTitle>
+            <DialogDescription className="text-[var(--color-text-muted)]">
+              Modifiez la version ou le style du badge avant de l&apos;insérer
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPresetBadge && (
+            <div className="space-y-5 py-4">
+              {/* Aperçu actuel */}
+              <div className="p-4 rounded-xl bg-[var(--color-bg-darker)] border border-[var(--color-border-dark)] text-center">
+                <p className="text-xs text-[var(--color-text-muted)] mb-3">Aperçu</p>
+                <img
+                  src={generateBadgeUrl({
+                    ...selectedPresetBadge,
+                    message: customVersion || selectedPresetBadge.message,
+                    style: customBadgeStyle
+                  })}
+                  alt={selectedPresetBadge.name}
+                  className="h-7 mx-auto"
+                />
+              </div>
+
+              {/* Version/Message */}
+              <div className="space-y-2">
+                <Label className="text-[var(--color-text-secondary)]">
+                  Version / Message
+                </Label>
+                <Input
+                  value={customVersion}
+                  onChange={(e) => setCustomVersion(e.target.value)}
+                  placeholder={selectedPresetBadge.message}
+                  className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]"
+                />
+                <p className="text-xs text-[var(--color-text-muted)]">
+                  Ex: &gt;=8.1, 18.0, 3.9+, Latest
+                </p>
+              </div>
+
+              {/* Style */}
+              <div className="space-y-2">
+                <Label className="text-[var(--color-text-secondary)]">Style du badge</Label>
+                <Select value={customBadgeStyle} onValueChange={setCustomBadgeStyle}>
+                  <SelectTrigger className="bg-[var(--color-bg-darker)] border-[var(--color-border-dark)] text-[var(--color-text-primary)]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
+                    {BADGE_STYLES.map(style => (
+                      <SelectItem key={style.value} value={style.value} className="text-[var(--color-text-primary)] focus:bg-[var(--color-primary)]/20">
+                        {style.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              className="border-[var(--color-border-dark)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-elevated)]"
+            >
+              Annuler
+            </Button>
+            <Button
+              onClick={handleInsertCustomizedBadge}
+              className="btn-primary"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Insérer le badge
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }
@@ -331,14 +502,14 @@ export function BadgeRowGenerator({ onInsert }: BadgeGeneratorProps) {
   }
 
   return (
-    <Card>
+    <Card className="bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
           <Star className="w-4 h-4 text-yellow-500" />
           Ligne de badges
-          <Badge variant="secondary" className="text-xs">Premium</Badge>
+          <Badge variant="secondary" className="text-xs bg-[var(--color-primary)]/20 text-[var(--color-primary)]">Premium</Badge>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-[var(--color-text-muted)]">
           Sélectionnez plusieurs badges pour les insérer en ligne
         </CardDescription>
       </CardHeader>
@@ -351,26 +522,26 @@ export function BadgeRowGenerator({ onInsert }: BadgeGeneratorProps) {
                 id={`badge-${badge.id}`}
                 checked={selectedBadges.some(b => b.id === badge.id)}
                 onChange={() => handleBadgeToggle(badge)}
-                className="rounded"
+                className="rounded accent-[var(--color-primary)]"
               />
               <label htmlFor={`badge-${badge.id}`} className="flex items-center gap-2 cursor-pointer">
-                <img 
+                <img
                   src={`https://img.shields.io/badge/${encodeURIComponent(badge.label)}-${encodeURIComponent(badge.message)}-${badge.color}?style=${badge.style}${badge.logo ? `&logo=${badge.logo}` : ''}${badge.logoColor ? `&logoColor=${badge.logoColor}` : ''}`}
                   alt={badge.name}
                   className="h-4"
                 />
-                <span className="text-sm">{badge.name}</span>
+                <span className="text-sm text-[var(--color-text-secondary)]">{badge.name}</span>
               </label>
             </div>
           ))}
         </div>
-        
+
         {selectedBadges.length > 0 && (
-          <div className="p-3 bg-gray-50 rounded border">
-            <p className="text-sm font-medium mb-2">{selectedBadges.length} badge(s) sélectionné(s)</p>
+          <div className="p-3 bg-[var(--color-bg-darker)] rounded-lg border border-[var(--color-border-dark)]">
+            <p className="text-sm font-medium mb-2 text-[var(--color-text-primary)]">{selectedBadges.length} badge(s) sélectionné(s)</p>
             <div className="flex flex-wrap gap-1">
               {selectedBadges.map(badge => (
-                <img 
+                <img
                   key={badge.id}
                   src={`https://img.shields.io/badge/${encodeURIComponent(badge.label)}-${encodeURIComponent(badge.message)}-${badge.color}?style=${badge.style}${badge.logo ? `&logo=${badge.logo}` : ''}${badge.logoColor ? `&logoColor=${badge.logoColor}` : ''}`}
                   alt={badge.name}
@@ -380,11 +551,11 @@ export function BadgeRowGenerator({ onInsert }: BadgeGeneratorProps) {
             </div>
           </div>
         )}
-        
-        <Button 
+
+        <Button
           onClick={handleInsertRow}
           disabled={selectedBadges.length === 0}
-          className="w-full"
+          className="w-full btn-primary"
         >
           <Plus className="w-4 h-4 mr-2" />
           Insérer {selectedBadges.length} badge(s)

@@ -29,7 +29,7 @@ const plans = [
     description: 'Pour les professionnels',
     features: [
       'Documents illimités',
-      '100+ templates premium',
+      'Templates premium inclus',
       'Génération IA',
       'Export multi-formats',
       'Intégration GitHub',

@@ -28,7 +28,7 @@ const features = [
   },
   {
     icon: <FileText className="w-6 h-6" />,
-    title: '100+ Templates',
+    title: 'Templates Pro',
     description: 'Bibliothèque complète de templates pour tous types de projets.',
     gradient: 'from-green-500 to-emerald-500'
   },
