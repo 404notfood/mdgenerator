@@ -386,87 +386,87 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }
 
+  // Style classes for toolbar buttons
+  const toolbarBtnBase = "p-2 rounded-lg transition-all duration-200 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)]"
+  const toolbarBtnActive = "bg-[var(--color-primary)]/20 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/30"
+  const toolbarBtnDisabled = "opacity-40 cursor-not-allowed"
+  const toolbarDivider = "h-6 w-px bg-[var(--color-border-dark)] mx-1"
+
   return (
-    <div className={`border border-gray-200 rounded-lg ${className}`}>
+    <div className={`border border-[var(--color-border-dark)] rounded-xl overflow-hidden bg-[var(--color-bg-darker)] ${className}`}>
       {/* Toolbar */}
-      <div className="bg-white border-b border-gray-300">
+      <div className="bg-[var(--color-surface-dark)] border-b border-[var(--color-border-dark)]">
         {/* Première ligne - Actions principales */}
-        <div className="flex flex-wrap items-center gap-0 p-2 border-b border-gray-200 bg-gray-50">
+        <div className="flex flex-wrap items-center gap-1 p-3 border-b border-[var(--color-border-dark)]/50">
           {/* Groupe Undo/Redo */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().undo()}
-              className="hover:bg-blue-100 disabled:opacity-50"
+              className={`${toolbarBtnBase} ${!editor.can().undo() ? toolbarBtnDisabled : ''}`}
               title="Annuler (Ctrl+Z)"
             >
-              <Undo className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Undo className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().redo()}
-              className="hover:bg-blue-100 disabled:opacity-50"
+              className={`${toolbarBtnBase} ${!editor.can().redo() ? toolbarBtnDisabled : ''}`}
               title="Refaire (Ctrl+Y)"
             >
-              <Redo className="w-4 h-4" />
-            </Button>
+              <Redo className="w-5 h-5" />
+            </button>
           </div>
+
+          <div className={toolbarDivider} />
 
           {/* Groupe Liens et Médias */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={setLink}
-              className={`hover:bg-blue-100 ${editor.isActive('link') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('link') ? toolbarBtnActive : ''}`}
               title="Lien (Ctrl+K)"
             >
-              <LinkIcon className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <LinkIcon className="w-5 h-5" />
+            </button>
+            <button
               onClick={addImage}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Insérer une image"
             >
-              <ImageIcon className="w-4 h-4" />
-            </Button>
+              <ImageIcon className="w-5 h-5" />
+            </button>
           </div>
 
+          <div className={toolbarDivider} />
+
           {/* Groupe Tableaux */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
+          <div className="flex items-center">
             <div className="relative dropdown-container">
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setShowTablePicker(!showTablePicker)}
                 title="Insérer un tableau"
-                className={`hover:bg-blue-100 ${showTablePicker ? 'bg-blue-200' : ''}`}
+                className={`${toolbarBtnBase} ${showTablePicker ? toolbarBtnActive : ''}`}
               >
-                <TableIcon className="w-4 h-4" />
-              </Button>
-              
+                <TableIcon className="w-5 h-5" />
+              </button>
+
               {showTablePicker && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-3 z-50 min-w-max">
-                  <div className="text-sm text-gray-700 mb-2 font-medium text-center">Insérer un tableau</div>
-                  <div className="grid grid-cols-10 gap-1 bg-gray-100 p-2 rounded border" style={{width: '220px'}}>
+                <div className="absolute top-full left-0 mt-2 bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-2xl p-4 z-50 min-w-max">
+                  <div className="text-sm text-[var(--color-text-secondary)] mb-3 font-medium text-center">Insérer un tableau</div>
+                  <div className="grid grid-cols-10 gap-1 bg-[var(--color-bg-darker)] p-2 rounded-lg border border-[var(--color-border-dark)]" style={{width: '220px'}}>
                     {Array.from({ length: 100 }, (_, index) => {
                       const row = Math.floor(index / 10) + 1
                       const col = (index % 10) + 1
                       const isSelected = row <= tableHover.rows && col <= tableHover.cols
-                      
+
                       return (
                         <div
                           key={index}
                           className={`w-4 h-4 cursor-pointer transition-all duration-100 border rounded-sm flex-shrink-0 ${
-                            isSelected 
-                              ? 'bg-blue-500 border-blue-600 shadow-sm' 
-                              : 'bg-white border-gray-400 hover:bg-gray-200 hover:border-gray-600'
+                            isSelected
+                              ? 'bg-[var(--color-primary)] border-[var(--color-primary)] shadow-sm shadow-[var(--color-primary)]/30'
+                              : 'bg-[var(--color-surface-elevated)] border-[var(--color-border-dark)] hover:bg-[var(--color-primary)]/20 hover:border-[var(--color-primary)]/50'
                           }`}
                           onMouseEnter={() => handleTableCellHover(row, col)}
                           onClick={() => handleTableCellClick(row, col)}
@@ -475,7 +475,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
                       )
                     })}
                   </div>
-                  <div className="text-center text-sm text-gray-700 mt-2 font-medium bg-gray-50 py-1 px-3 rounded">
+                  <div className="text-center text-sm text-[var(--color-primary)] mt-3 font-semibold bg-[var(--color-primary)]/10 py-1.5 px-3 rounded-lg">
                     {tableHover.rows} × {tableHover.cols}
                   </div>
                 </div>
@@ -483,50 +483,48 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
             </div>
           </div>
 
+          <div className={toolbarDivider} />
+
           {/* Groupe Blockquote et HR */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('blockquote') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('blockquote') ? toolbarBtnActive : ''}`}
               title="Citation"
             >
-              <Quote className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Quote className="w-5 h-5" />
+            </button>
+            <button
               onClick={addHorizontalRule}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Ligne horizontale"
             >
-              <Minus className="w-4 h-4" />
-            </Button>
+              <Minus className="w-5 h-5" />
+            </button>
           </div>
 
+          <div className={toolbarDivider} />
+
           {/* Groupe Emojis */}
-          <div className="flex">
+          <div className="flex items-center">
             <div className="relative dropdown-container">
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                 title="Emojis"
-                className={`hover:bg-blue-100 ${showEmojiPicker ? 'bg-blue-200' : ''}`}
+                className={`${toolbarBtnBase} ${showEmojiPicker ? toolbarBtnActive : ''}`}
               >
-                <Smile className="w-4 h-4" />
-              </Button>
-              
+                <Smile className="w-5 h-5" />
+              </button>
+
               {showEmojiPicker && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-3 z-50 w-80">
-                  <div className="text-xs text-gray-700 mb-2 font-medium">Emojis pour README GitHub</div>
-                  <div className="grid grid-cols-8 gap-2">
+                <div className="absolute top-full left-0 mt-2 bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-2xl p-4 z-50 w-80">
+                  <div className="text-sm text-[var(--color-text-secondary)] mb-3 font-medium">Emojis pour README GitHub</div>
+                  <div className="grid grid-cols-8 gap-1">
                     {githubEmojis.map((item, index) => (
                       <button
                         key={index}
                         onClick={() => insertEmoji(item.emoji)}
-                        className="p-2 hover:bg-gray-100 rounded text-xl transition-colors hover:scale-110 transform"
+                        className="p-2 hover:bg-[var(--color-surface-elevated)] rounded-lg text-xl transition-all hover:scale-110 transform"
                         title={item.name}
                       >
                         {item.emoji}
@@ -540,196 +538,172 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
         </div>
 
         {/* Deuxième ligne - Formatage du texte */}
-        <div className="flex flex-wrap items-center gap-0 p-2">
+        <div className="flex flex-wrap items-center gap-1 p-3">
           {/* Groupe Titres */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className={`hover:bg-blue-100 ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('heading', { level: 1 }) ? toolbarBtnActive : ''}`}
               title="Titre 1"
             >
-              <Heading1 className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Heading1 className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={`hover:bg-blue-100 ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('heading', { level: 2 }) ? toolbarBtnActive : ''}`}
               title="Titre 2"
             >
-              <Heading2 className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Heading2 className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className={`hover:bg-blue-100 ${editor.isActive('heading', { level: 3 }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('heading', { level: 3 }) ? toolbarBtnActive : ''}`}
               title="Titre 3"
             >
-              <Heading3 className="w-4 h-4" />
-            </Button>
+              <Heading3 className="w-5 h-5" />
+            </button>
           </div>
+
+          <div className={toolbarDivider} />
 
           {/* Groupe Formatage */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('bold') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('bold') ? toolbarBtnActive : ''}`}
               title="Gras (Ctrl+B)"
             >
-              <Bold className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Bold className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('italic') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('italic') ? toolbarBtnActive : ''}`}
               title="Italique (Ctrl+I)"
             >
-              <Italic className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Italic className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleStrike().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('strike') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('strike') ? toolbarBtnActive : ''}`}
               title="Barré"
             >
-              <Strikethrough className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Strikethrough className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleCode().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('code') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('code') ? toolbarBtnActive : ''}`}
               title="Code inline"
             >
-              <Code className="w-4 h-4" />
-            </Button>
+              <Code className="w-5 h-5" />
+            </button>
           </div>
+
+          <div className={toolbarDivider} />
 
           {/* Groupe Alignement */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().setTextAlign('left').run()}
-              className={`hover:bg-blue-100 ${editor.isActive({ textAlign: 'left' }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive({ textAlign: 'left' }) ? toolbarBtnActive : ''}`}
               title="Aligner à gauche"
             >
-              <AlignLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <AlignLeft className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().setTextAlign('center').run()}
-              className={`hover:bg-blue-100 ${editor.isActive({ textAlign: 'center' }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive({ textAlign: 'center' }) ? toolbarBtnActive : ''}`}
               title="Centrer"
             >
-              <AlignCenter className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <AlignCenter className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().setTextAlign('right').run()}
-              className={`hover:bg-blue-100 ${editor.isActive({ textAlign: 'right' }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive({ textAlign: 'right' }) ? toolbarBtnActive : ''}`}
               title="Aligner à droite"
             >
-              <AlignRight className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <AlignRight className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-              className={`hover:bg-blue-100 ${editor.isActive({ textAlign: 'justify' }) ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive({ textAlign: 'justify' }) ? toolbarBtnActive : ''}`}
               title="Justifier"
             >
-              <AlignJustify className="w-4 h-4" />
-            </Button>
+              <AlignJustify className="w-5 h-5" />
+            </button>
           </div>
+
+          <div className={toolbarDivider} />
 
           {/* Groupe Listes */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('bulletList') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('bulletList') ? toolbarBtnActive : ''}`}
               title="Liste à puces"
             >
-              <List className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <List className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`hover:bg-blue-100 ${editor.isActive('orderedList') ? 'bg-blue-200' : ''}`}
+              className={`${toolbarBtnBase} ${editor.isActive('orderedList') ? toolbarBtnActive : ''}`}
               title="Liste numérotée"
             >
-              <ListOrdered className="w-4 h-4" />
-            </Button>
+              <ListOrdered className="w-5 h-5" />
+            </button>
           </div>
+
+          <div className={toolbarDivider} />
 
           {/* Groupe Images (alignement) */}
-          <div className="flex border-r border-gray-300 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center">
+            <button
               onClick={resizeImage}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Redimensionner l'image"
             >
-              <Settings className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <Settings className="w-5 h-5" />
+            </button>
+            <button
               onClick={alignImageLeft}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Image à gauche"
             >
-              <ImageLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <ImageLeft className="w-5 h-5" />
+            </button>
+            <button
               onClick={alignImageCenter}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Image centrée"
             >
-              <ImageCenter className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <ImageCenter className="w-5 h-5" />
+            </button>
+            <button
               onClick={alignImageRight}
-              className="hover:bg-blue-100"
+              className={toolbarBtnBase}
               title="Image à droite"
             >
-              <ImageRight className="w-4 h-4" />
-            </Button>
+              <ImageRight className="w-5 h-5" />
+            </button>
           </div>
 
+          <div className={toolbarDivider} />
+
           {/* Groupe Couleurs */}
-          <div className="flex items-center border-r border-gray-300 pr-2 mr-2">
-            <div className="flex items-center gap-1" title="Couleurs de texte">
-              <Palette className="w-4 h-4 text-gray-600" />
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5" title="Couleurs de texte">
+              <Palette className="w-5 h-5 text-[var(--color-text-muted)]" />
               {colors.map((colorItem, index) => (
                 <button
                   key={index}
                   onClick={() => setTextColor(colorItem.color)}
-                  className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
+                  className="w-6 h-6 rounded-md border-2 border-[var(--color-border-dark)] cursor-pointer hover:scale-110 hover:border-[var(--color-text-secondary)] transition-all shadow-sm"
                   style={{ backgroundColor: colorItem.color }}
                   title={`${colorItem.name}`}
                 />
               ))}
               <button
                 onClick={() => editor.chain().focus().unsetColor().run()}
-                className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform bg-white relative"
+                className="w-6 h-6 rounded-md border-2 border-[var(--color-border-dark)] cursor-pointer hover:scale-110 hover:border-red-500 transition-all bg-[var(--color-surface-elevated)] relative"
                 title="Enlever la couleur du texte"
               >
                 <span className="absolute inset-0 flex items-center justify-center text-red-500 text-xs font-bold">✕</span>
@@ -737,22 +711,24 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
             </div>
           </div>
 
+          <div className={toolbarDivider} />
+
           {/* Groupe Surlignage */}
-          <div className="flex items-center">
-            <div className="flex items-center gap-1" title="Surlignage">
-              <Highlighter className="w-4 h-4 text-gray-600" />
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5" title="Surlignage">
+              <Highlighter className="w-5 h-5 text-[var(--color-text-muted)]" />
               {highlightColors.map((colorItem, index) => (
                 <button
                   key={index}
                   onClick={() => setHighlight(colorItem.color)}
-                  className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform"
+                  className="w-6 h-6 rounded-md border-2 border-[var(--color-border-dark)] cursor-pointer hover:scale-110 hover:border-[var(--color-text-secondary)] transition-all shadow-sm"
                   style={{ backgroundColor: colorItem.color }}
                   title={`Surligner en ${colorItem.name}`}
                 />
               ))}
               <button
                 onClick={() => editor.chain().focus().unsetHighlight().run()}
-                className="w-5 h-5 rounded border border-gray-300 cursor-pointer hover:scale-110 transition-transform bg-white relative"
+                className="w-6 h-6 rounded-md border-2 border-[var(--color-border-dark)] cursor-pointer hover:scale-110 hover:border-red-500 transition-all bg-[var(--color-surface-elevated)] relative"
                 title="Enlever le surlignage"
               >
                 <span className="absolute inset-0 flex items-center justify-center text-red-500 text-xs font-bold">✕</span>
@@ -763,7 +739,7 @@ export function TipTapEditor({ content = '', onChange, className }: TipTapEditor
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="editor-content" />
     </div>
   )
 }

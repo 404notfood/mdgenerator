@@ -102,13 +102,13 @@ export function ImageUpload({ onImageUploaded }: ImageUploadProps) {
           <Crown className="w-3 h-3 ml-1 text-yellow-500" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-[var(--color-surface-dark)] border-[var(--color-border-dark)]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <ImageIcon className="w-5 h-5" />
+          <DialogTitle className="flex items-center gap-2 text-[var(--color-text-primary)]">
+            <ImageIcon className="w-5 h-5 text-[var(--color-primary)]" />
             Upload d'image
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-[var(--color-text-muted)]">
             Ajoutez des images à votre README (JPG, PNG, GIF, WebP - Max 5MB)
           </DialogDescription>
         </DialogHeader>
@@ -116,23 +116,24 @@ export function ImageUpload({ onImageUploaded }: ImageUploadProps) {
         <div className="space-y-4">
           {/* Zone de drop */}
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              dragOver 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400'
+            className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
+              dragOver
+                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                : 'border-[var(--color-border-dark)] hover:border-[var(--color-primary)]/50 bg-[var(--color-surface-dark)]'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-sm text-gray-600 mb-2">
+            <Upload className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-4" />
+            <p className="text-sm text-[var(--color-text-secondary)] mb-2">
               Glissez-déposez votre image ici
             </p>
-            <p className="text-xs text-gray-500 mb-4">ou</p>
+            <p className="text-xs text-[var(--color-text-muted)] mb-4">ou</p>
             <Button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
+              className="btn-primary"
             >
               {isUploading ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -154,7 +155,7 @@ export function ImageUpload({ onImageUploaded }: ImageUploadProps) {
           {/* Barre de progrès */}
           {isUploading && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
                 <span>Upload en cours...</span>
                 <span>{uploadProgress}%</span>
               </div>
@@ -164,12 +165,12 @@ export function ImageUpload({ onImageUploaded }: ImageUploadProps) {
 
           {/* Erreur */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
               <div className="flex items-start gap-2">
-                <X className="w-4 h-4 text-red-600 mt-0.5" />
+                <X className="w-4 h-4 text-red-400 mt-0.5" />
                 <div>
-                  <p className="text-sm text-red-800 font-medium">Erreur d'upload</p>
-                  <p className="text-xs text-red-700">{error}</p>
+                  <p className="text-sm text-red-400 font-medium">Erreur d'upload</p>
+                  <p className="text-xs text-red-400/80">{error}</p>
                 </div>
               </div>
             </div>
@@ -178,23 +179,23 @@ export function ImageUpload({ onImageUploaded }: ImageUploadProps) {
           {/* Images uploadées */}
           {uploadedImages.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-medium">Images uploadées</h4>
+              <h4 className="text-sm font-medium text-[var(--color-text-primary)]">Images uploadées</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {uploadedImages.map((image, index) => (
-                  <div key={index} className="flex items-center gap-3 p-2 bg-green-50 rounded">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  <div key={index} className="flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-green-800 truncate">
+                      <p className="text-sm font-medium text-green-400 truncate">
                         {image.filename}
                       </p>
-                      <p className="text-xs text-green-600 font-mono truncate">
+                      <p className="text-xs text-green-400/70 font-mono truncate">
                         {image.url}
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[var(--color-text-muted)]">
                 Le markdown des images a été ajouté automatiquement à votre éditeur.
               </p>
             </div>
