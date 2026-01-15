@@ -329,10 +329,9 @@ export default function DashboardPage() {
                   label="Parcourir les templates"
                 />
                 <QuickActionButton
-                  href="https://github.com"
-                  icon={<Code2 className="w-4 h-4" />}
-                  label="Documentation"
-                  external
+                  href="/dashboard/settings"
+                  icon={<Settings className="w-4 h-4" />}
+                  label="Paramètres GitHub"
                 />
               </div>
             </div>

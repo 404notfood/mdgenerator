@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ExportButtons } from '@/components/editor/export-buttons'
 import { ImageUpload } from '@/components/editor/image-upload'
 import { PremiumFeatures } from '@/components/editor/premium-features'
+import { AIGenerator } from '@/components/editor/ai-generator'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -182,6 +183,11 @@ function EditorContent() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 justify-center">
+            {isPremium && (
+              <AIGenerator
+                onGenerate={(generatedContent) => setContent(generatedContent)}
+              />
+            )}
             <ExportButtons
               content={content}
               htmlContent={content}

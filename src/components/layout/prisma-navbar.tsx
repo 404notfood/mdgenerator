@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, ChevronDown, Github, ExternalLink, User, LogOut, Crown, LayoutDashboard } from 'lucide-react'
+import { Menu, X, ChevronDown, Github, ExternalLink, User, LogOut, Crown, LayoutDashboard, Settings } from 'lucide-react'
 import { useSession, signOut } from '@/lib/auth-client'
 
 interface NavItem {
@@ -36,7 +36,7 @@ export function PrismaNavbar() {
   }, [])
 
   const handleSignOut = async () => {
-    await signOut({ fetchOptions: { onSuccess: () => window.location.href = '/' } })
+    await signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/' } } })
   }
 
   return (
@@ -112,6 +112,14 @@ export function PrismaNavbar() {
                       >
                         <User className="w-4 h-4" />
                         Éditeur
+                      </Link>
+                      <Link
+                        href="/dashboard/settings"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <Settings className="w-4 h-4" />
+                        Paramètres
                       </Link>
                       {!isPremium && (
                         <Link
@@ -207,6 +215,14 @@ export function PrismaNavbar() {
                     >
                       <User className="w-5 h-5" />
                       Éditeur
+                    </Link>
+                    <Link
+                      href="/dashboard/settings"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-dark)] transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Settings className="w-5 h-5" />
+                      Paramètres
                     </Link>
                     <button
                       onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}

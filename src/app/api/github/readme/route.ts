@@ -20,26 +20,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Repository requis" }, { status: 400 })
     }
 
-    // Récupérer le token GitHub depuis l'account
-    const account = await prisma.account.findFirst({
-      where: {
-        userId: session.user.id,
-        providerId: "github"
-      }
+    // D'abord essayer le Personal Access Token de l'utilisateur
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { githubToken: true }
     })
 
-    if (!account?.accessToken) {
-      return NextResponse.json({ error: "Token GitHub non trouvé" }, { status: 400 })
+    let accessToken = user?.githubToken
+
+    // Fallback sur le token OAuth si pas de PAT
+    if (!accessToken) {
+      const account = await prisma.account.findFirst({
+        where: {
+          userId: session.user.id,
+          providerId: "github"
+        }
+      })
+      accessToken = account?.accessToken
+    }
+
+    if (!accessToken) {
+      return NextResponse.json({ error: "Token GitHub non trouvé. Configurez un Personal Access Token dans les paramètres." }, { status: 400 })
     }
 
     // Récupérer le contenu du fichier Markdown
-    const apiUrl = file_path 
+    const apiUrl = file_path
       ? `https://api.github.com/repos/${repo_full_name}/contents/${file_path}`
       : `https://api.github.com/repos/${repo_full_name}/readme`
 
     const response = await fetch(apiUrl, {
       headers: {
-        Authorization: `Bearer ${account.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         Accept: file_path ? "application/vnd.github.v3+json" : "application/vnd.github.v3.raw"
       }
     })

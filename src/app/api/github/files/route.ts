@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
@@ -25,17 +26,33 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Repository requis" }, { status: 400 })
     }
 
-    // Get GitHub token from session (you'll need to add this to your auth setup)
-    const githubToken = (session.user as any).githubToken
+    // D'abord essayer le Personal Access Token de l'utilisateur
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { githubToken: true }
+    })
 
-    if (!githubToken) {
-      return NextResponse.json({ 
-        error: "Token GitHub requis. Veuillez vous connecter avec GitHub." 
+    let accessToken = user?.githubToken
+
+    // Fallback sur le token OAuth si pas de PAT
+    if (!accessToken) {
+      const account = await prisma.account.findFirst({
+        where: {
+          userId: session.user.id,
+          providerId: "github"
+        }
+      })
+      accessToken = account?.accessToken
+    }
+
+    if (!accessToken) {
+      return NextResponse.json({
+        error: "Token GitHub non trouvé. Configurez un Personal Access Token dans les paramètres."
       }, { status: 400 })
     }
 
     // Fetch repository contents recursively to find all .md files
-    const markdownFiles = await fetchMarkdownFiles(githubToken, repoFullName)
+    const markdownFiles = await fetchMarkdownFiles(accessToken, repoFullName)
 
     return NextResponse.json(markdownFiles)
 

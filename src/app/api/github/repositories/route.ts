@@ -13,22 +13,33 @@ export async function GET() {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
     }
 
-    // Récupérer le token GitHub depuis l'account
-    const account = await prisma.account.findFirst({
-      where: {
-        userId: session.user.id,
-        providerId: "github"
-      }
+    // D'abord essayer le Personal Access Token de l'utilisateur
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { githubToken: true }
     })
 
-    if (!account?.accessToken) {
-      return NextResponse.json({ error: "Token GitHub non trouvé" }, { status: 400 })
+    let accessToken = user?.githubToken
+
+    // Fallback sur le token OAuth si pas de PAT
+    if (!accessToken) {
+      const account = await prisma.account.findFirst({
+        where: {
+          userId: session.user.id,
+          providerId: "github"
+        }
+      })
+      accessToken = account?.accessToken
+    }
+
+    if (!accessToken) {
+      return NextResponse.json({ error: "Token GitHub non trouvé. Configurez un Personal Access Token dans les paramètres." }, { status: 400 })
     }
 
     // Récupérer les repositories de l'utilisateur
-    const response = await fetch("https://api.github.com/user/repos?sort=updated&per_page=50", {
+    const response = await fetch("https://api.github.com/user/repos?sort=updated&per_page=50&type=all", {
       headers: {
-        Authorization: `Bearer ${account.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         Accept: "application/vnd.github.v3+json"
       }
     })
@@ -45,7 +56,7 @@ export async function GET() {
         try {
           const readmeResponse = await fetch(`https://api.github.com/repos/${repo.full_name}/readme`, {
             headers: {
-              Authorization: `Bearer ${account.accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
               Accept: "application/vnd.github.v3+json"
             }
           })

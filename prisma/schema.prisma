@@ -45,6 +45,13 @@ model User {
   // Better Auth fields
   emailVerified Boolean @default(false)
 
+  // GitHub Personal Access Token pour l'accès aux repos privés
+  githubToken String? @db.Text
+
+  // Clés API IA (BYOK - Bring Your Own Key)
+  aiProvider    String? // openai, anthropic, google, mistral
+  aiApiKey      String? @db.Text
+
   // Relations
   accounts  Account[]
   sessions  Session[]
