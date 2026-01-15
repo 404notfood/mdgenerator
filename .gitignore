@@ -140,3 +140,5 @@ temp/
 /keys/
 /secrets/
 exportdb/site.sql
+
+/docs/*
