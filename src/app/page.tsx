@@ -466,7 +466,7 @@ export default function HomePage() {
               title="Ressources"
               links={[
                 { name: 'Documentation', href: '/docs' },
-                { name: 'API', href: '/api' },
+                { name: 'API', href: '/api-docs' },
                 { name: 'Blog', href: '/blog' },
                 { name: 'Support', href: '/support' }
               ]}
@@ -477,7 +477,8 @@ export default function HomePage() {
               links={[
                 { name: 'Confidentialité', href: '/privacy' },
                 { name: 'CGU', href: '/terms' },
-                { name: 'Cookies', href: '/cookies' }
+                { name: 'Cookies', href: '/cookies' },
+                { name: 'Contact', href: '/contact' }
               ]}
             />
           </div>
